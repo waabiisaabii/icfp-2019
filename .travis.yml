@@ -1,4 +1,13 @@
-language: rust
-script:
-  - cargo build --verbose --all
-  - cargo test --verbose --all
+matrix:
+  include:
+    - language: rust
+      before_script:
+        - cd rust
+      script:
+        - cargo build --verbose --all
+        - cargo test --verbose --all
+    - language: java
+      before_script:
+        - cd kotlin
+      script:
+        - ./gradlew build
