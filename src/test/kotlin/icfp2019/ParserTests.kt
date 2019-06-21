@@ -33,10 +33,8 @@ class ParserTests {
       })
     }
 
-
     println()
     println("===================")
-
 
     (p.size.x - 1).downTo(0).forEach { x ->
       0.until(p.size.y).forEach { y ->

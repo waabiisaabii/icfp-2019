@@ -93,6 +93,26 @@ fun solve(problem: Problem): Solution {
   return Solution(problem.problemId, listOf())
 }
 
+fun constructObstacleMap(problem: Problem): Array<Array<Boolean>> {
+    val rowSize = problem.map.size
+    val colSize = problem.map.get(0).size
+    // Create a Array of Array map for the given problem with
+    val rowObstacle = Array(rowSize) {i -> Array(colSize) {j -> false}}
+    val row = problem.map
+    for (i in row.indices) {
+        val colObstacle = Array(colSize){ i -> false}
+        val col = row.get(i)
+        for (j in col.indices) {
+            val node = col[j]
+            if (node.isObstacle) {
+                colObstacle.set(j,true)
+            }
+        }
+        rowObstacle.set(i,colObstacle)
+    }
+    return rowObstacle
+}
+
 fun encodeSolution(solution: Solution, directory: Path): File {
   val file = Files.createFile(directory.resolve("prob-${solution.problemId.id}.sol"))
   // TODO
