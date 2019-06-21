@@ -5209,6 +5209,23 @@ var render, validate;
             }
         }(a, c)));
         Eg(c, b.Sf, Gg().Zj)
+        c.ac.strokeStyle = "#FF0000";
+        for (var lx = 0; lx < 250; lx += 1) {
+          c.ac.beginPath();
+          x = Dg(c, new uf(lx, 0));
+          y = Dg(c, new uf(lx, 250));
+          c.ac.moveTo(x.k, x.l);
+          c.ac.lineTo(y.k, y.l);
+          c.ac.stroke();
+        }
+        for (var lx = 0; lx < 250; lx += 1) {
+          c.ac.beginPath();
+          x = Dg(c, new uf(0, lx));
+          y = Dg(c, new uf(250, lx));
+          c.ac.moveTo(x.k, x.l);
+          c.ac.lineTo(y.k, y.l);
+          c.ac.stroke();
+        }
     }
     function dm(a) {
         var b = em(a)
