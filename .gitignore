@@ -15,3 +15,13 @@ target/
 .gradle/
 build/
 out/
+
+# Bazel goo
+/bazel-*
+.ijwb/
+
+# vim
+.*.sw?
+
+# unencrypted service account creds
+.cache-credentials.json

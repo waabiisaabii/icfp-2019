@@ -1,0 +1,2 @@
+build --google_credentials=.cache-credentials.json
+build --remote_upload_local_results=true
