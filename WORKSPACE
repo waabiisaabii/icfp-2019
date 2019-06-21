@@ -44,17 +44,41 @@ http_archive(
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
+load("@bazel_tools//tools/build_defs/repo:maven_rules.bzl", "maven_dependency_plugin", "maven_jar")
+load(":junit5.bzl", "junit_jupiter_java_repositories", "junit_platform_java_repositories")
+
+maven_server(
+    name = "default",
+    url = "http://central.maven.org/maven2/",
+)
+
+JUNIT_JUPITER_VERSION = "5.4.2"
+
+JUNIT_PLATFORM_VERSION = "1.4.2"
+
+junit_jupiter_java_repositories(
+    version = JUNIT_JUPITER_VERSION,
+)
+
+junit_platform_java_repositories(
+    version = JUNIT_PLATFORM_VERSION,
+)
+
 maven_install(
     name = "maven",
     artifacts = [
         "com.google.code.findbugs:jsr305:1.3.9",
         "com.google.errorprone:error_prone_annotations:2.0.18",
-        "org.junit.jupiter:junit-jupiter:5.4.2",
-        "org.junit.jupiter:junit-jupiter-api:5.4.2",
+        "org.junit.jupiter:junit-jupiter:%s" % JUNIT_JUPITER_VERSION,
+        "org.junit.jupiter:junit-jupiter-api:%s" % JUNIT_JUPITER_VERSION,
+        "org.junit.jupiter:junit-jupiter-engine:%s" % JUNIT_JUPITER_VERSION,
+        "com.google.guava:guava:28.0-jre",
+        "org.junit.platform:junit-platform-console:%s" % JUNIT_PLATFORM_VERSION,
     ],
     repositories = [
         "https://jcenter.bintray.com/",
         "https://repo1.maven.org/maven2",
     ],
 )
+
 

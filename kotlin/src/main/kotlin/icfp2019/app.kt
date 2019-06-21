@@ -10,7 +10,7 @@ fun main() {
 
   val solutions = mutableListOf<Solution>()
   readZipFile(File("problems.zip"))
-      .filter { it.file.isFile }
+      .filter { it.line.isNotEmpty() }
       .forEach {
         val problem = parseDesc(it)
         val solution = solve(problem)
@@ -33,10 +33,9 @@ enum class Boosters {
 }
 
 data class Point(val x: Int, val y: Int)
-data class Node(val point: Point, val isObstacle: Boolean, val booster: Boosters)
-
+data class Node(val point: Point, val isObstacle: Boolean, val booster: Boosters?)
 data class ProblemId(val id: Int)
-data class ProblemDescription(val problemId: ProblemId, val file: File)
+data class ProblemDescription(val problemId: ProblemId, val line: String)
 data class Problem(val problemId: ProblemId, val startingPosition: Point, val map: Array<Array<Node>>)
 
 /*
@@ -49,7 +48,33 @@ Task:
  6. add solution to another zip (script/program)
  */
 
-fun parseDesc(file: ProblemDescription): Problem {
+
+
+fun parseDesc(problem: ProblemDescription): Problem {
+
+  val (mapEdges, startPosition, obstacles, boosters) = problem.line.split('#')
+  val startPoint = parsePoint(startPosition)
+  val verticies = parseEdges(mapEdges)
+  val obstacleEdges = parseEdges(obstacles)
+  val parsedBosters = parseBoosters(boosters)
+
+  val maxY = verticies.maxBy { it.y }?.y ?: throw RuntimeException()
+  val maxX = verticies.maxBy { it.x }?.x ?: throw RuntimeException()
+
+  val grid = (0..maxX).map { x ->
+    (0..maxY).map { y ->
+      Node(Point(x, y), isObstacle = true, booster = null)
+    }.toTypedArray()
+  }.toTypedArray()
+
+  verticies.forEach {
+    grid[it.x][it.y] = grid[it.x][it.y].copy(isObstacle = false)
+  }
+
+
+
+
+
   // Read lines
   /*
   1. Read lines
@@ -64,8 +89,13 @@ fun parseDesc(file: ProblemDescription): Problem {
            boosters ::= repSep(boosterLocation,”; ”)
                task ::= map # point # obstacles # boosters
    */
-  return Problem(ProblemId(0), Point(0, 0), arrayOf())
+  return Problem(problem.problemId, startPoint, arrayOf())
 }
+
+fun parseBoosters(boosters: String): List<Boosters> {
+  return listOf()
+}
+
 
 /*
 A solution for a task
