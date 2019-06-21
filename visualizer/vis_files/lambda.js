@@ -5257,7 +5257,7 @@ var yMax = 0;
           c.ac.lineTo(y.k, y.l);
           c.ac.stroke();
           if (lx % rowSkip == 0) {
-            c.ac.fillText(lx, x.k+10, x.l+10c);
+            c.ac.fillText(lx, x.k+10, x.l+10);
           }
         }
     }
