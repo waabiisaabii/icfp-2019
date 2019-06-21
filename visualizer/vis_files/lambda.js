@@ -5214,6 +5214,7 @@ var render, validate;
         }(a, c)));
         Eg(c, b.Sf, Gg().Zj)
         c.ac.strokeStyle = "#FF0000";
+        c.ac.fillStyle = "#FF0000";
         for (var lx = 0; lx < 250; lx += 1) {
           c.ac.beginPath();
           x = Dg(c, new uf(lx, 0));
@@ -5221,6 +5222,9 @@ var render, validate;
           c.ac.moveTo(x.k, x.l);
           c.ac.lineTo(y.k, y.l);
           c.ac.stroke();
+          if (lx % 10 == 0) {
+            c.ac.fillText(lx, x.k, x.l);
+          }
         }
         for (var lx = 0; lx < 250; lx += 1) {
           c.ac.beginPath();
@@ -5229,6 +5233,9 @@ var render, validate;
           c.ac.moveTo(x.k, x.l);
           c.ac.lineTo(y.k, y.l);
           c.ac.stroke();
+          if (lx % 10 == 0) {
+            c.ac.fillText(lx, x.k, x.l);
+          }
         }
     }
 
