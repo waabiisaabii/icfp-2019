@@ -1,5 +1,8 @@
 package icfp2019
 
+import com.google.common.base.CharMatcher.none
+import com.google.common.collect.Range
+import com.google.common.collect.TreeRangeSet
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -36,7 +39,12 @@ data class Point(val x: Int, val y: Int)
 data class Node(val point: Point, val isObstacle: Boolean, val booster: Boosters?)
 data class ProblemId(val id: Int)
 data class ProblemDescription(val problemId: ProblemId, val line: String)
-data class Problem(val problemId: ProblemId, val startingPosition: Point, val map: Array<Array<Node>>)
+data class Size(val x: Int, val y: Int)
+data class Problem(
+    val problemId: ProblemId,
+    val size: Size,
+    val startingPosition: Point,
+    val map: Array<Array<Node>>)
 
 /*
 Task:
@@ -47,54 +55,6 @@ Task:
  5. output to file prob_NNN.sol (use checker to validate?) https://icfpcontest2019.github.io/solution_checker/
  6. add solution to another zip (script/program)
  */
-
-
-
-fun parseDesc(problem: ProblemDescription): Problem {
-
-  val (mapEdges, startPosition, obstacles, boosters) = problem.line.split('#')
-  val startPoint = parsePoint(startPosition)
-  val verticies = parseEdges(mapEdges)
-  val obstacleEdges = parseEdges(obstacles)
-  val parsedBosters = parseBoosters(boosters)
-
-  val maxY = verticies.maxBy { it.y }?.y ?: throw RuntimeException()
-  val maxX = verticies.maxBy { it.x }?.x ?: throw RuntimeException()
-
-  val grid = (0..maxX).map { x ->
-    (0..maxY).map { y ->
-      Node(Point(x, y), isObstacle = true, booster = null)
-    }.toTypedArray()
-  }.toTypedArray()
-
-  verticies.forEach {
-    grid[it.x][it.y] = grid[it.x][it.y].copy(isObstacle = false)
-  }
-
-
-
-
-
-  // Read lines
-  /*
-  1. Read lines
-  2. Parse map
-  Grammar:
-    x,y: Nat
-              point ::= (x,y)
-                map ::= repSep(point,”,”)
-        BoosterCode ::= B|F|L|X
-    boosterLocation ::= BoosterCode point
-          obstacles ::= repSep(map,”; ”)
-           boosters ::= repSep(boosterLocation,”; ”)
-               task ::= map # point # obstacles # boosters
-   */
-  return Problem(problem.problemId, startPoint, arrayOf())
-}
-
-fun parseBoosters(boosters: String): List<Boosters> {
-  return listOf()
-}
 
 
 /*
