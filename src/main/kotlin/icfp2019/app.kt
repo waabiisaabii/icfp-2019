@@ -24,11 +24,11 @@ fun main() {
 }
 
 fun writeZip(workingDir: Path, solutions: MutableList<Solution>) {
-  TODO("not implemented")
+  TODO(workingDir.toString() + solutions.toString() + "not implemented");
 }
 
 fun readZipFile(file: File): List<ProblemDescription> {
-  TODO("not implemented")
+  TODO(file.toString() + "not implemented")
 }
 
 enum class Boosters {
@@ -55,7 +55,6 @@ Task:
  5. output to file prob_NNN.sol (use checker to validate?) https://icfpcontest2019.github.io/solution_checker/
  6. add solution to another zip (script/program)
  */
-
 
 /*
 A solution for a task
