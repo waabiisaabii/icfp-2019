@@ -1,7 +1,0 @@
-[package]
-name = "icfp2019"
-version = "0.1.0"
-authors = ["Jake <jake@jakeswenson.com>"]
-edition = "2018"
-
-[dependencies]
