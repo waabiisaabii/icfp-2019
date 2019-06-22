@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.3.40"
+    id("com.diffplug.gradle.spotless") version "3.23.1"
 }
 
 group = "icfp2019"
@@ -21,8 +22,15 @@ dependencies {
     implementation("org.junit.jupiter:junit-jupiter-engine")
 }
 
+spotless {
+     kotlin {
+        ktlint("0.33.0")
+    }
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.allWarningsAsErrors = true
 }
 
 tasks.withType<Test>().configureEach {

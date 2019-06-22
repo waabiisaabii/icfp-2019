@@ -1,38 +1,35 @@
 package icfp2019
 
-import com.google.common.base.CharMatcher.none
-import com.google.common.collect.Range
-import com.google.common.collect.TreeRangeSet
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
 fun main() {
-  val workingDir: Path = Paths.get("")
+    val workingDir: Path = Paths.get("")
 
-  val solutions = mutableListOf<Solution>()
-  readZipFile(File("problems.zip"))
-      .filter { it.line.isNotEmpty() }
-      .forEach {
-        val problem = parseDesc(it)
-        val solution = solve(problem)
-        encodeSolution(solution, workingDir)
-      }
+    val solutions = mutableListOf<Solution>()
+    readZipFile(File("problems.zip"))
+        .filter { it.line.isNotEmpty() }
+        .forEach {
+            val problem = parseDesc(it)
+            val solution = solve(problem)
+            encodeSolution(solution, workingDir)
+        }
 
-  writeZip(workingDir, solutions)
+    writeZip(workingDir, solutions)
 }
 
 fun writeZip(workingDir: Path, solutions: MutableList<Solution>) {
-  TODO(workingDir.toString() + solutions.toString() + "not implemented");
+    TODO(workingDir.toString() + solutions.toString() + "not implemented")
 }
 
 fun readZipFile(file: File): List<ProblemDescription> {
-  TODO(file.toString() + "not implemented")
+    TODO(file.toString() + "not implemented")
 }
 
 enum class Boosters {
-  B, F, L, X
+    B, F, L, X
 }
 
 data class Point(val x: Int, val y: Int)
@@ -44,7 +41,8 @@ data class Problem(
     val problemId: ProblemId,
     val size: Size,
     val startingPosition: Point,
-    val map: Array<Array<Node>>)
+    val map: Array<Array<Node>>
+)
 
 /*
 Task:
@@ -83,37 +81,37 @@ The actions are encoded as follows:
  */
 
 enum class Actions {
-  W, S, A, D, Z, E, Q, B, F, L
+    W, S, A, D, Z, E, Q, B, F, L
 }
 
 data class Solution(val problemId: ProblemId, val actions: List<Actions>)
 
 fun solve(problem: Problem): Solution {
-  return Solution(problem.problemId, listOf())
+    return Solution(problem.problemId, listOf())
 }
 
 fun constructObstacleMap(problem: Problem): Array<Array<Boolean>> {
     val rowSize = problem.map.size
     val colSize = problem.map.get(0).size
     // Create a Array of Array map for the given problem with
-    val rowObstacle = Array(rowSize) {i -> Array(colSize) {j -> false}}
+    val rowObstacle = Array(rowSize) { Array(colSize) { false } }
     val row = problem.map
     for (i in row.indices) {
-        val colObstacle = Array(colSize){ i -> false}
-        val col = row.get(i)
+        val colObstacle = Array(colSize) { false }
+        val col = row[i]
         for (j in col.indices) {
             val node = col[j]
             if (node.isObstacle) {
-                colObstacle.set(j,true)
+                colObstacle[j] = true
             }
         }
-        rowObstacle.set(i,colObstacle)
+        rowObstacle[i] = colObstacle
     }
     return rowObstacle
 }
 
 fun encodeSolution(solution: Solution, directory: Path): File {
-  val file = Files.createFile(directory.resolve("prob-${solution.problemId.id}.sol"))
-  // TODO
-  return file.toFile()
+    val file = Files.createFile(directory.resolve("prob-${solution.problemId.id}.sol"))
+    // TODO
+    return file.toFile()
 }

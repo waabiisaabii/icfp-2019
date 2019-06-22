@@ -15,18 +15,16 @@ class Problems {
     fun run() {
         ZipFile(path).use { zip ->
             zip.entries().asSequence().forEach { entry ->
-                if(entry.name.endsWith(".desc")) {
-                    zip.getInputStream(entry).use { _ ->
-                        val content = File(entry.name).readText()
-                        problemMap.put(entry.name, content)
-                    }
+                if (entry.name.endsWith(".desc")) {
+                    val content = File(entry.name).readText()
+                    problemMap.put(entry.name, content)
                 }
             }
         }
     }
 
-    fun getProblem(id: String) : List<String> {
-        var content : String = problemMap.getOrDefault(id, "")
+    fun getProblem(id: String): List<String> {
+        var content: String = problemMap.getOrDefault(id, "")
         return content.split("#")
     }
 }
