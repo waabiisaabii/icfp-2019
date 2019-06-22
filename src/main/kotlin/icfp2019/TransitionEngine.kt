@@ -24,7 +24,10 @@ class TransitionEngine {
             Point(robotState.currentPosition.x, newY)
         )
 
-        val board = gameState.gameBoard.set(robotState.currentPosition, Cell.setFlag(gameState.gameBoard.get(robotState.currentPosition), Cell.WRAPPED))
+        val board = gameState.gameBoard.set(
+            robotState.currentPosition,
+            gameState.gameBoard.get(robotState.currentPosition).copy(isWrapped = true)
+        )
 
         return GameState(board, listOf(newRobotState), listOf(), listOf())
     }
@@ -38,7 +41,10 @@ class TransitionEngine {
             Point(robotState.currentPosition.x, newY)
         )
 
-        val board = gameState.gameBoard.set(robotState.currentPosition, Cell.setFlag(gameState.gameBoard.get(robotState.currentPosition), Cell.WRAPPED))
+        val board = gameState.gameBoard.set(
+            robotState.currentPosition,
+            gameState.gameBoard.get(robotState.currentPosition).copy(isWrapped = true)
+        )
 
         return GameState(board, listOf(newRobotState), listOf(), listOf())
     }
@@ -52,7 +58,10 @@ class TransitionEngine {
             Point(newX, robotState.currentPosition.y)
         )
 
-        val board = gameState.gameBoard.set(robotState.currentPosition, Cell.setFlag(gameState.gameBoard.get(robotState.currentPosition), Cell.WRAPPED))
+        val board = gameState.gameBoard.set(
+            robotState.currentPosition,
+            gameState.gameBoard.get(robotState.currentPosition).copy(isWrapped = true)
+        )
 
         return GameState(board, listOf(newRobotState), listOf(), listOf())
     }
@@ -66,7 +75,10 @@ class TransitionEngine {
             Point(newX, robotState.currentPosition.x)
         )
 
-        val board = gameState.gameBoard.set(robotState.currentPosition, Cell.setFlag(gameState.gameBoard.get(robotState.currentPosition), Cell.WRAPPED))
+        val board = gameState.gameBoard.set(
+            robotState.currentPosition,
+            gameState.gameBoard.get(robotState.currentPosition).copy(isWrapped = true)
+        )
 
         return GameState(board, listOf(newRobotState), listOf(), listOf())
     }

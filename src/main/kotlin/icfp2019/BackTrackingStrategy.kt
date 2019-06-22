@@ -1,6 +1,5 @@
 package icfp2019
 
-import java.lang.IllegalStateException
 import java.util.*
 
 // Move to an open space and push moves onto a stack, if no moves available then backtrack using the stack
@@ -20,8 +19,11 @@ class BackTrackingStrategy : Strategy {
                 } else {
                     val backTrackAction = stack.pop().invert() ?: throw IllegalStateException("Non-invertable action!")
 
-                    currentState = tEngine.apply(currentState, hashMapOf(
-                        Pair<RobotId, Action>(RobotId(0), backTrackAction)))
+                    currentState = tEngine.apply(
+                        currentState, hashMapOf(
+                            Pair<RobotId, Action>(RobotId(0), backTrackAction)
+                        )
+                    )
                     stack.push(backTrackAction)
                     moveList.add(backTrackAction)
                     availableMoves = availableMoves(currentState)
@@ -29,8 +31,11 @@ class BackTrackingStrategy : Strategy {
             } else {
                 // Else take the first available move
                 val action = availableMoves.get(0)
-                currentState = tEngine.apply(currentState, hashMapOf(
-                    Pair<RobotId, Action>(RobotId(0), action)))
+                currentState = tEngine.apply(
+                    currentState, hashMapOf(
+                        Pair<RobotId, Action>(RobotId(0), action)
+                    )
+                )
                 stack.push(action)
                 moveList.add(action)
                 availableMoves = availableMoves(currentState)
@@ -38,7 +43,8 @@ class BackTrackingStrategy : Strategy {
         } while (stack.isNotEmpty() || availableMoves.isNotEmpty())
 
         val plans = hashMapOf<RobotId, List<Action>>(
-            Pair<RobotId, List<Action>>(RobotId(0), moveList))
+            Pair<RobotId, List<Action>>(RobotId(0), moveList)
+        )
 
         return plans
     }
@@ -48,30 +54,34 @@ class BackTrackingStrategy : Strategy {
 
         val currentPosition = gameState.robotStateList[0].currentPosition
 
+        fun canMoveTo(node: Node): Boolean {
+            return node.isWrapped.not() && node.isObstacle.not()
+        }
+
         if (currentPosition.y + 1 < gameState.gameBoard.height) {
-            val up = gameState.gameBoard.get(Point(currentPosition.x, currentPosition.y + 1))
-            if (!Cell.hasFlag(up, Cell.WRAPPED) && !Cell.hasFlag(up, Cell.OBSTACLE)) {
+            val up = gameState.gameBoard.get(currentPosition.up())
+            if (canMoveTo(up)) {
                 moves.add(Action.MoveUp)
             }
         }
 
         if (currentPosition.y - 1 > -1) {
-            val down = gameState.gameBoard.get(Point(currentPosition.x, currentPosition.y - 1))
-            if (!Cell.hasFlag(down, Cell.WRAPPED) && !Cell.hasFlag(down, Cell.OBSTACLE)) {
+            val down = gameState.gameBoard.get(currentPosition.down())
+            if (canMoveTo(down)) {
                 moves.add(Action.MoveDown)
             }
         }
 
         if (currentPosition.x - 1 > -1) {
-            val left = gameState.gameBoard.get(Point(currentPosition.x - 1, currentPosition.y))
-            if (!Cell.hasFlag(left, Cell.WRAPPED) && !Cell.hasFlag(left, Cell.OBSTACLE)) {
+            val left = gameState.gameBoard.get(currentPosition.left())
+            if (canMoveTo(left)) {
                 moves.add(Action.MoveLeft)
             }
         }
 
         if (currentPosition.x + 1 < gameState.gameBoard.width) {
-            val right = gameState.gameBoard.get(Point(currentPosition.x + 1, currentPosition.y))
-            if (!Cell.hasFlag(right, Cell.WRAPPED) && !Cell.hasFlag(right, Cell.OBSTACLE)) {
+            val right = gameState.gameBoard.get(currentPosition.right())
+            if (canMoveTo(right)) {
                 moves.add(Action.MoveRight)
             }
         }

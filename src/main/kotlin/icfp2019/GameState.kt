@@ -25,35 +25,29 @@ data class GameState(
             moves.add(Action.TeleportBack(location))
         }
 
+        fun canMoveTo(point: Point): Boolean {
+            return gameBoard.isInBoard(point) && !cell.isObstacle
+        }
+
         // Check directions
-        if (gameBoard.isInBoard(Point(point.x, point.y + 1)) &&
-                !Cell.hasFlag(cell, Cell.OBSTACLE)) {
+        if (canMoveTo(point.up())) {
             moves.add(Action.MoveUp)
         }
-        if (gameBoard.isInBoard(Point(point.x, point.y - 1)) &&
-            !Cell.hasFlag(cell, Cell.OBSTACLE)) {
+
+        if (canMoveTo(point.down())) {
             moves.add(Action.MoveDown)
         }
-        if (gameBoard.isInBoard(Point(point.x + 1, point.y)) &&
-            !Cell.hasFlag(cell, Cell.OBSTACLE)) {
-            moves.add(Action.MoveRight)
-        }
-        if (gameBoard.isInBoard(Point(point.x - 1, point.y)) &&
-            !Cell.hasFlag(cell, Cell.OBSTACLE)) {
+
+        if (canMoveTo(point.right())) {
             moves.add(Action.MoveRight)
         }
 
-        // Check Boosters
-        if (Cell.hasFlag(cell, Cell.BOOST_CLONE) ||
-            Cell.hasFlag(cell, Cell.BOOST_TELEPORT) ||
-            Cell.hasFlag(cell, Cell.BOOST_FAST) ||
-            Cell.hasFlag(cell, Cell.BOOST_DRILL) ||
-            Cell.hasFlag(cell, Cell.BOOST_EXT)) {
-            moves.add(Action.AttachManipulator(point))
+        if (canMoveTo(point.left())) {
+            moves.add(Action.MoveLeft)
         }
 
         // Are we on a clone point?
-        if (Cell.hasFlag(cell, Cell.SPAWN_POINT)) {
+        if (cell.hasBooster(Booster.CloningLocation)) {
             moves.add(Action.CloneRobot)
         }
 

@@ -1,29 +1,49 @@
 package icfp2019
+
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.pcollections.TreePVector
 
 class GameBoardTests {
     @Test
     fun testGameBoardRowsSequence() {
-        var g = GameBoard(arrayOf(1, 2, 3, 4, 5, 6), 3, 2)
-        g = g.set(Point(0, 0), 1)
-        g = g.set(Point(1, 0), 2)
-        g = g.set(Point(2, 0), 3)
-        g = g.set(Point(0, 1), 4)
-        g = g.set(Point(1, 1), 5)
-        g = g.set(Point(2, 1), 6)
-        val rows = g.rows()
-        Assertions.assertEquals(2, rows.size)
-        Assertions.assertEquals(3, rows[0].size)
-        Assertions.assertEquals(3, rows[1].size)
-        Assertions.assertEquals(g.get(Point(0, 0)), 1)
-        Assertions.assertEquals(g.get(Point(1, 0)), 2)
-        Assertions.assertEquals(g.get(Point(2, 0)), 3)
-        Assertions.assertEquals(1, rows[0][0])
-        Assertions.assertEquals(2, rows[0][1])
-        Assertions.assertEquals(3, rows[0][2])
-        Assertions.assertEquals(4, rows[1][0])
-        Assertions.assertEquals(5, rows[1][1])
-        Assertions.assertEquals(6, rows[1][2])
+        var g = GameBoard(
+            TreePVector.from(
+                listOf(
+                    TreePVector.from(
+                        listOf(
+                            Node(Point(0, 0), false),
+                            Node(Point(0, 1), false)
+                        )
+                    ),
+                    TreePVector.from(
+                        listOf(
+                            Node(Point(1, 0), false),
+                            Node(Point(1, 1), false)
+                        )
+                    ),
+                    TreePVector.from(
+                        listOf(
+                            Node(Point(2, 0), false),
+                            Node(Point(2, 1), false)
+                        )
+                    )
+                )
+            ), 3, 2
+        )
+        val columns = g.cells
+        Assertions.assertEquals(3, columns.size)
+        Assertions.assertEquals(2, columns[0].size)
+        Assertions.assertEquals(2, columns[1].size)
+        Assertions.assertEquals(2, columns[2].size)
+        Assertions.assertEquals(g.get(Point(0, 0)), Node(Point(0, 0), false))
+        Assertions.assertEquals(g.get(Point(1, 0)), Node(Point(1, 0), false))
+        Assertions.assertEquals(g.get(Point(2, 0)), Node(Point(2, 0), false))
+        Assertions.assertEquals(Node(Point(0, 0), false), columns[0][0])
+        Assertions.assertEquals(Node(Point(0, 1), false), columns[0][1])
+        Assertions.assertEquals(Node(Point(1, 0), false), columns[1][0])
+        Assertions.assertEquals(Node(Point(1, 1), false), columns[1][1])
+        Assertions.assertEquals(Node(Point(2, 0), false), columns[2][0])
+        Assertions.assertEquals(Node(Point(2, 1), false), columns[2][1])
     }
 }

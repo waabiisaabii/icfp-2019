@@ -13,19 +13,19 @@ class appTests {
             listOf<PVector<Node>>(
                 TreePVector.from(
                     listOf(
-                        Node(Point(0, 0), false, null),
-                        Node(Point(0, 1), false, null),
-                        Node(Point(0, 2), true, null),
-                        Node(Point(0, 3), false, null)
+                        Node(Point(0, 0), false),
+                        Node(Point(0, 1), false),
+                        Node(Point(0, 2), true),
+                        Node(Point(0, 3), false)
                     )
                 ),
 
                 TreePVector.from(
                     listOf(
-                        Node(Point(1, 0), true, null),
-                        Node(Point(1, 1), false, null),
-                        Node(Point(1, 2), true, null),
-                        Node(Point(1, 3), false, null)
+                        Node(Point(1, 0), true),
+                        Node(Point(1, 1), false),
+                        Node(Point(1, 2), true),
+                        Node(Point(1, 3), false)
                     )
                 )
             )

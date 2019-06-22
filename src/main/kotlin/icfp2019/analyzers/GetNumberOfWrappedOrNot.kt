@@ -6,7 +6,7 @@ import icfp2019.core.Analyzer
 
 data class WrappedUnwrapped(val wrapped: Int, val unwrapped: Int)
 
-class GetNumberOfWrappedOrNot : Analyzer<WrappedUnwrapped> {
+object GetNumberOfWrappedOrNot : Analyzer<WrappedUnwrapped> {
     override fun analyze(map: GameBoard): (state: GameState) -> WrappedUnwrapped {
         return { _ ->
             WrappedUnwrapped(0, 0)
