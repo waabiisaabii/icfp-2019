@@ -49,28 +49,28 @@ class BackTrackingStrategy : Strategy {
         val currentPosition = gameState.robotStateList[0].currentPosition
 
         if (currentPosition.y + 1 < gameState.gameBoard.height) {
-            val up = gameState.gameBoard.get(currentPosition.x, currentPosition.y + 1)
+            val up = gameState.gameBoard.get(Point(currentPosition.x, currentPosition.y + 1))
             if (!Cell.hasFlag(up, Cell.WRAPPED) && !Cell.hasFlag(up, Cell.OBSTACLE)) {
                 moves.add(Action.MoveUp)
             }
         }
 
         if (currentPosition.y - 1 > -1) {
-            val down = gameState.gameBoard.get(currentPosition.x, currentPosition.y - 1)
+            val down = gameState.gameBoard.get(Point(currentPosition.x, currentPosition.y - 1))
             if (!Cell.hasFlag(down, Cell.WRAPPED) && !Cell.hasFlag(down, Cell.OBSTACLE)) {
                 moves.add(Action.MoveDown)
             }
         }
 
         if (currentPosition.x - 1 > -1) {
-            val left = gameState.gameBoard.get(currentPosition.x - 1, currentPosition.y)
+            val left = gameState.gameBoard.get(Point(currentPosition.x - 1, currentPosition.y))
             if (!Cell.hasFlag(left, Cell.WRAPPED) && !Cell.hasFlag(left, Cell.OBSTACLE)) {
                 moves.add(Action.MoveLeft)
             }
         }
 
         if (currentPosition.x + 1 < gameState.gameBoard.width) {
-            val right = gameState.gameBoard.get(currentPosition.x + 1, currentPosition.y)
+            val right = gameState.gameBoard.get(Point(currentPosition.x + 1, currentPosition.y))
             if (!Cell.hasFlag(right, Cell.WRAPPED) && !Cell.hasFlag(right, Cell.OBSTACLE)) {
                 moves.add(Action.MoveRight)
             }

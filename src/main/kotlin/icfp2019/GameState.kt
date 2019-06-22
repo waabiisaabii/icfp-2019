@@ -9,10 +9,10 @@ data class GameState(
 
     fun availableMoves(point: Point): List<Action> {
         val moves = mutableListOf<Action>()
-        val cell = gameBoard.get(point.x, point.y)
+        val cell = gameBoard.get(point)
 
         // Asking about a bad location... No moves
-        if (!gameBoard.isInBoard(point.x, point.y)) {
+        if (!gameBoard.isInBoard(point)) {
             return moves
         }
 
@@ -26,19 +26,19 @@ data class GameState(
         }
 
         // Check directions
-        if (gameBoard.isInBoard(point.x, point.y + 1) &&
+        if (gameBoard.isInBoard(Point(point.x, point.y + 1)) &&
                 !Cell.hasFlag(cell, Cell.OBSTACLE)) {
             moves.add(Action.MoveUp)
         }
-        if (gameBoard.isInBoard(point.x, point.y - 1) &&
+        if (gameBoard.isInBoard(Point(point.x, point.y - 1)) &&
             !Cell.hasFlag(cell, Cell.OBSTACLE)) {
             moves.add(Action.MoveDown)
         }
-        if (gameBoard.isInBoard(point.x + 1, point.y) &&
+        if (gameBoard.isInBoard(Point(point.x + 1, point.y)) &&
             !Cell.hasFlag(cell, Cell.OBSTACLE)) {
             moves.add(Action.MoveRight)
         }
-        if (gameBoard.isInBoard(point.x - 1, point.y) &&
+        if (gameBoard.isInBoard(Point(point.x - 1, point.y)) &&
             !Cell.hasFlag(cell, Cell.OBSTACLE)) {
             moves.add(Action.MoveRight)
         }
