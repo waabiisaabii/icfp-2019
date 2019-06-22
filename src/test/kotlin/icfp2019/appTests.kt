@@ -24,7 +24,7 @@ class appTests {
 
         )
 
-        val problem = Problem(ProblemId(1), Size(2, 4), Point(0, 0), nodeMap)
+        val problem = Problem(Size(2, 4), Point(0, 0), nodeMap)
         val obstacle = constructObstacleMap(problem)
 
         val expected = arrayOf(

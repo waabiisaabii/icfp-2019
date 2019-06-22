@@ -18,9 +18,8 @@ fun parseEdges(mapEdges: String): List<Point> {
         .map { Point(Integer.parseInt(it[0]), Integer.parseInt(it[1])) }
 }
 
-fun parseDesc(problem: ProblemParseInput): Problem {
-
-    val (mapEdges, startPosition, obstacles, boosters) = problem.line.split('#')
+fun parseDesc(problem: String): Problem {
+    val (mapEdges, startPosition, obstacles, boosters) = problem.split('#')
     val startPoint = parsePoint(startPosition)
     val verticies = parseEdges(mapEdges)
     val obstacleEdges = parseEdges(obstacles)
@@ -85,7 +84,7 @@ fun parseDesc(problem: ProblemParseInput): Problem {
              boosters ::= repSep(boosterLocation,”; ”)
                  task ::= map # point # obstacles # boosters
      */
-    return Problem(problem.problemId, Size(maxX, maxY), startPoint, grid)
+    return Problem(Size(maxX, maxY), startPoint, grid)
 }
 
 fun parseBoosters(boosters: String): List<Pair<Booster, Point>> {
