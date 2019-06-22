@@ -24,18 +24,18 @@ sealed class Action {
         MoveUp -> MoveDown
         else -> null
     }
-}
 
-object MoveUp : Action()
-object MoveDown : Action()
-object MoveLeft : Action()
-object MoveRight : Action()
-object DoNothing : Action()
-object TurnClockwise : Action()
-object TurnCounterClockwise : Action()
-data class AttachManipulator(val point: Point) : Action()
-object AttachFastWheels : Action()
-object StartDrill : Action()
-object PlantTeleportResetPoint : Action()
-data class TeleportBack(val targetResetPoint: Point) : Action()
-object CloneRobot : Action()
+    object MoveUp : Action()
+    object MoveDown : Action()
+    object MoveLeft : Action()
+    object MoveRight : Action()
+    object DoNothing : Action()
+    object TurnClockwise : Action()
+    object TurnCounterClockwise : Action()
+    data class AttachManipulator(val point: Point) : Action()
+    object AttachFastWheels : Action()
+    object StartDrill : Action()
+    object PlantTeleportResetPoint : Action()
+    data class TeleportBack(val targetResetPoint: Point) : Action()
+    object CloneRobot : Action()
+}

@@ -5,40 +5,60 @@ import com.google.common.base.Splitter
 import com.google.common.collect.Range
 import com.google.common.collect.TreeRangeSet
 
-val matcher = CharMatcher.anyOf("()")!!
+class Splitters {
+    companion object {
+        val PAREN_MATCHER = CharMatcher.anyOf("()")!!
+        val COMMA_SPLITTER = Splitter.on(',').omitEmptyStrings()!!
+        val HASH_SPLITTER = Splitter.on('#')!!
+        val SEMI_SPLITTER = Splitter.on(';').omitEmptyStrings()!!
+    }
+}
 
 fun parsePoint(mapEdges: String): Point {
-    return parseEdges(mapEdges)[0]
+    return parseEdges(mapEdges).first()
 }
 
 fun parseEdges(mapEdges: String): List<Point> {
-    return mapEdges.split(',')
-        .map { matcher.trimFrom(it) }
+    // split a string like:
+    //      (1,2),(3,4),(5,6)
+    // in to:
+    //      (1  2)  (3  4)  (5  6)
+    // then read 2 at a time, trimming the parens
+    return Splitters.COMMA_SPLITTER.split(mapEdges)
+        .map { Splitters.PAREN_MATCHER.trimFrom(it) }
         .windowed(2, step = 2)
-        .map { Point(Integer.parseInt(it[0]), Integer.parseInt(it[1])) }
+        .map { (first, second) -> Point(Integer.parseInt(first), Integer.parseInt(second)) }
+}
+
+fun parseObstacles(obstacles: String): List<List<Point>> {
+    return Splitters.SEMI_SPLITTER.split(obstacles)
+        .map { parseEdges(it) }
 }
 
 fun parseDesc(problem: String): Problem {
-    val (mapEdges, startPosition, obstacles, boosters) = problem.split('#')
+    val (mapEdges, startPosition, obstacles, boosters) = Splitters.HASH_SPLITTER.splitToList(problem)
     val startPoint = parsePoint(startPosition)
-    val verticies = parseEdges(mapEdges)
-    val obstacleEdges = parseEdges(obstacles)
-    val parsedBosters = parseBoosters(boosters)
+    val vertices = parseEdges(mapEdges)
+    val obstacleEdges = parseObstacles(obstacles)
+    val parsedBoosters = parseBoosters(boosters)
 
-    val maxY = verticies.maxBy { it.y }?.y ?: throw RuntimeException()
-    val maxX = verticies.maxBy { it.x }?.x ?: throw RuntimeException()
+    val maxY = vertices.maxBy { it.y }?.y ?: throw IllegalArgumentException("No Vertices")
+    val maxX = vertices.maxBy { it.x }?.x ?: throw IllegalArgumentException("No Vertices")
 
     val xArrayIndices = 0.until(maxX)
     val yArrayIndices = 0.until(maxY)
 
-    val grid =
+    // Initialize grid with each cell starting out as an obstacle
+    val grid: Array<Array<Node>> =
         xArrayIndices.map { x ->
             yArrayIndices.map { y ->
                 Node(Point(x, y), isObstacle = true)
             }.toTypedArray()
         }.toTypedArray()
 
-    val xEdgeGroups = (verticies + obstacleEdges).groupBy { it.x }.mapValues { entry ->
+    // Build a mapping of all the edges per column along the x-axis
+    // Edges are represented as a Closed range between sorted why coordinates in the column
+    val xEdgeGroups = (vertices + obstacleEdges.flatten()).groupBy { it.x }.mapValues { entry ->
         val set: TreeRangeSet<Int> = TreeRangeSet.create()
         val points: List<Point> = entry.value
         val sortedBy = points.map { it.y }.sortedBy { it }
@@ -50,24 +70,28 @@ fun parseDesc(problem: String): Problem {
         set
     }
 
-    println(xEdgeGroups)
-
+    // this is the actual fill method for the map
+    // This walks along the grid, one Y row at a time
+    // Then walks the X axis for that row and for every edges crossed
+    // it flips its inObstacle state
     yArrayIndices.forEach { y ->
         var inObstacle = true
+        val currentYEdge = Range.closed(y, y + 1)
+
         xArrayIndices.forEach { x ->
             val yEdges = xEdgeGroups[x]
-            val column = grid[x]
 
-            if (yEdges?.encloses(Range.closed(y, y + 1)) == true) {
-                inObstacle = !inObstacle
+            if (yEdges?.encloses(currentYEdge) == true) {
+                inObstacle = inObstacle.not()
             }
 
+            val column = grid[x]
             column[y] = column[y].copy(isObstacle = inObstacle)
         }
     }
 
-    parsedBosters.forEach {
-        grid[it.second.x][it.second.y] = grid[it.second.x][it.second.y].copy(booster = it.first)
+    parsedBoosters.forEach {
+        grid[it.location.x][it.location.y] = grid[it.location.x][it.location.y].copy(booster = it.booster)
     }
 
     // Read lines
@@ -87,11 +111,12 @@ fun parseDesc(problem: String): Problem {
     return Problem(Size(maxX, maxY), startPoint, grid)
 }
 
-fun parseBoosters(boosters: String): List<Pair<Booster, Point>> {
-    return Splitter.on(';')
-        .omitEmptyStrings()
+data class ParsedBooster(val booster: Booster, val location: Point)
+
+fun parseBoosters(boosters: String): List<ParsedBooster> {
+    return Splitters.SEMI_SPLITTER
         .split(boosters)
         .map {
-            Booster.fromString(it[0]) to parsePoint(it.substring(1))
+            ParsedBooster(Booster.fromString(it[0]), parsePoint(it.substring(1)))
         }
 }
