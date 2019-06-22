@@ -17,11 +17,11 @@ dependencies {
     implementation(platform("org.junit:junit-bom:5.4.0"))
 
     implementation("com.google.guava:guava:28.0-jre")
+    implementation("org.jgrapht:jgrapht-core:1.3.0")
     implementation("org.junit.jupiter:junit-jupiter")
     implementation("org.junit.jupiter:junit-jupiter-api")
     implementation("org.junit.jupiter:junit-jupiter-engine")
     implementation("org.pcollections:pcollections:3.0.3")
-    implementation("org.jgrapht:jgrapht-core:1.3.0")
 }
 
 spotless {
