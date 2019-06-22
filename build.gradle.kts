@@ -43,4 +43,13 @@ tasks.register("run", JavaExec::class) {
     classpath = sourceSets.getByName("main").runtimeClasspath
 
     main = "icfp2019.AppKt"
+    args = listOf("problems")
+}
+
+tasks.register<Zip>("packageDistribution") {
+    archiveFileName.set("solutions.zip")
+    destinationDirectory.set(file("$buildDir/dist"))
+
+    from("problems")
+    include("*.sol")
 }
