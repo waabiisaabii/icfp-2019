@@ -1,7 +1,12 @@
 package icfp2019
 
+import org.pcollections.PVector
+
 data class Problem(
-    val size: Size,
+    val size: MapSize,
     val startingPosition: Point,
-    val map: Array<Array<Node>>
-)
+    val map: PVector<PVector<Node>>
+) {
+    fun get(x: Int, y: Int): Node = map[x][y]
+    fun get(point: Point): Node = map[point.x][point.y]
+}

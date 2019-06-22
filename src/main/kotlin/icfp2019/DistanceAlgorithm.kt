@@ -1,9 +1,11 @@
 package icfp2019
 
+import org.pcollections.PVector
+
 // Given a map, return a map of weights where the weight indicates the distance
 // the square is from the walls. We will sum the distance to close horizontal and vertical walls.
 
-fun applyDistanceAlgorithm(map: Array<Array<Node>>): List<List<Int>> {
+fun applyDistanceAlgorithm(map: PVector<PVector<Node>>): List<List<Int>> {
     val maxX = map.size
     val maxY = map[0].size
     val ret = map.mapIndexed { x, subArray ->

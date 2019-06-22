@@ -4,6 +4,7 @@ import com.google.common.base.CharMatcher
 import com.google.common.base.Splitter
 import com.google.common.collect.Range
 import com.google.common.collect.TreeRangeSet
+import org.pcollections.TreePVector
 
 class Splitters {
     companion object {
@@ -108,7 +109,11 @@ fun parseDesc(problem: String): Problem {
              boosters ::= repSep(boosterLocation,”; ”)
                  task ::= map # point # obstacles # boosters
      */
-    return Problem(Size(maxX, maxY), startPoint, grid)
+    return Problem(
+        MapSize(maxX, maxY),
+        startPoint,
+        map = TreePVector.from(grid.map { TreePVector.from(it.toList()) })
+    )
 }
 
 data class ParsedBooster(val booster: Booster, val location: Point)
