@@ -1,3 +1,0 @@
-build --disk_cache=~/.bazel_repository_cache
-build --remote_cache=https://storage.googleapis.com/icfp-2019
-build --remote_upload_local_results=false
