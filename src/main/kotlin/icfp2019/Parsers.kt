@@ -52,7 +52,7 @@ fun parseDesc(problem: String): Problem {
     val grid: Array<Array<Node>> =
         xArrayIndices.map { x ->
             yArrayIndices.map { y ->
-                Node(Point(x, y), isObstacle = true)
+                Node(Point(x, y), isObstacle = false)
             }.toTypedArray()
         }.toTypedArray()
 
