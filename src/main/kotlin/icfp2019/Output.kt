@@ -1,6 +1,6 @@
 package icfp2019
 
-/*
+/*  
 A solution for a task
   prob-NNN.desc
 is a sequence of actions encoded as a single-line text file named
