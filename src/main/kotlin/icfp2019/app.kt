@@ -14,6 +14,7 @@ fun main(args: Array<String>) {
 }
 
 fun solve(problem: Problem): String {
+
 //    return Solution(problem)
     println(problem)
     return "Foo"
