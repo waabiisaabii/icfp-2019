@@ -1,11 +1,11 @@
 package icfp2019
 
 class TransitionEngine {
-    // -> Return GameState
-    /*
-    fun apply(currentGameState: GameState, robotIdMap: ImmutableMap<RobotId, Actions>): Nothing {
-      // Implement meaningful shit here
-      TODO("Implement apply")
+    fun apply(gameState: GameState, actions: Map<Int, Action>): GameState {
+        // TODO: implement later
+
+        actions.forEach { println("yay!" + it.key.toString()) }
+
+        return GameState(gameState.gameBoard, listOf(), listOf(), listOf())
     }
-     */
 }
