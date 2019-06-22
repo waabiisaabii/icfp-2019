@@ -83,6 +83,9 @@ fun parseDesc(problem: ProblemDescription): Problem {
   return Problem(problem.problemId, Size(maxX, maxY), startPoint, grid)
 }
 
-fun parseBoosters(boosters: String): List<Boosters> {
-  return listOf()
+fun parseBoosters(boosters: String): List<Pair<Boosters, Point>> {
+  return boosters.split(";")
+          .map { Boosters.valueOf(it[0].toString()).to(parsePoint(it.substring(1))) }
 }
+
+

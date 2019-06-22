@@ -50,4 +50,18 @@ class ParserTests {
       println()
     }
   }
+
+  @Test
+  fun testBoosterParser() {
+    val boosters = "X(16,25);L(19,19);F(4,30);F(17,21);B(4,31)"
+    val actual = parseBoosters(boosters)
+    val expected = listOf<Pair<Boosters, Point>>(
+            Pair(Boosters.X, Point(16, 25)),
+            Pair(Boosters.L, Point(19, 19)),
+            Pair(Boosters.F, Point(4, 30)),
+            Pair(Boosters.F, Point(17, 21)),
+            Pair(Boosters.B, Point(4, 31))
+    )
+    Assertions.assertEquals(actual, expected)
+  }
 }
