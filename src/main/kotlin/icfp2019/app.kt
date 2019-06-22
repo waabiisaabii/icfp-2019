@@ -33,7 +33,7 @@ enum class Boosters {
 }
 
 data class Point(val x: Int, val y: Int)
-data class Node(val point: Point, val isObstacle: Boolean, val booster: Boosters?)
+data class Node(val point: Point, val isObstacle: Boolean, val booster: Boosters? = null)
 data class ProblemId(val id: Int)
 data class ProblemDescription(val problemId: ProblemId, val line: String)
 data class Size(val x: Int, val y: Int)

@@ -1,6 +1,7 @@
 package icfp2019
 
 import com.google.common.base.CharMatcher
+import com.google.common.base.Splitter
 import com.google.common.collect.Range
 import com.google.common.collect.TreeRangeSet
 
@@ -19,33 +20,29 @@ fun parseEdges(mapEdges: String): List<Point> {
 
 fun parseDesc(problem: ProblemDescription): Problem {
 
-    val (mapEdges, startPosition, _, _) = problem.line.split('#')
+    val (mapEdges, startPosition, obstacles, boosters) = problem.line.split('#')
     val startPoint = parsePoint(startPosition)
-    val vertices = parseEdges(mapEdges)
+    val verticies = parseEdges(mapEdges)
+    val obstacleEdges = parseEdges(obstacles)
+    val parsedBosters = parseBoosters(boosters)
 
-    val maxY = vertices.maxBy { it.y }?.y ?: throw RuntimeException()
-    val maxX = vertices.maxBy { it.x }?.x ?: throw RuntimeException()
-    println("$maxX,$maxY")
+    val maxY = verticies.maxBy { it.y }?.y ?: throw RuntimeException()
+    val maxX = verticies.maxBy { it.x }?.x ?: throw RuntimeException()
 
-    val grid = (0.until(maxX)).map { x ->
-        (0.until(maxY)).map { y ->
-            Node(Point(x, y), isObstacle = true, booster = null)
+    val xArrayIndices = 0.until(maxX)
+    val yArrayIndices = 0.until(maxY)
+
+    val grid =
+        xArrayIndices.map { x ->
+            yArrayIndices.map { y ->
+                Node(Point(x, y), isObstacle = true)
+            }.toTypedArray()
         }.toTypedArray()
-    }.toTypedArray()
 
-    vertices.forEach {
-        val x = it.x
-        val y = it.y
-        println("$x,$y")
-        if (x < maxX && y < maxY) {
-            val xRow = grid[x]
-            xRow[y] = xRow[y].copy(isObstacle = false)
-        }
-    }
-
-    val xGroups = vertices.groupBy { it.x }.mapValues {
-        val set = TreeRangeSet.create<Int>()
-        val sortedBy = it.value.map { it.y }.sortedBy { it }
+    val xEdgeGroups = (verticies + obstacleEdges).groupBy { it.x }.mapValues { entry ->
+        val set: TreeRangeSet<Int> = TreeRangeSet.create()
+        val points: List<Point> = entry.value
+        val sortedBy = points.map { it.y }.sortedBy { it }
         sortedBy.windowed(2, step = 2).forEach {
             val (y1, y2) = it
             set.add(Range.closed(y1, y2))
@@ -54,14 +51,24 @@ fun parseDesc(problem: ProblemDescription): Problem {
         set
     }
 
-    var inObstacle = true
-    (0 until maxX).forEach { x ->
-        (0 until maxY).forEach { y ->
-            if (xGroups[x]?.contains(y) == true) {
+    println(xEdgeGroups)
+
+    yArrayIndices.forEach { y ->
+        var inObstacle = true
+        xArrayIndices.forEach { x ->
+            val yEdges = xEdgeGroups[x]
+            val column = grid[x]
+
+            if (yEdges?.encloses(Range.closed(y, y + 1)) == true) {
                 inObstacle = !inObstacle
             }
-            grid[x][y] = grid[x][y].copy(isObstacle = inObstacle)
+
+            column[y] = column[y].copy(isObstacle = inObstacle)
         }
+    }
+
+    parsedBosters.forEach {
+        grid[it.second.x][it.second.y] = grid[it.second.x][it.second.y].copy(booster = it.first)
     }
 
     // Read lines
@@ -82,6 +89,10 @@ fun parseDesc(problem: ProblemDescription): Problem {
 }
 
 fun parseBoosters(boosters: String): List<Pair<Boosters, Point>> {
-    return boosters.split(";")
-        .map { Boosters.valueOf(it[0].toString()).to(parsePoint(it.substring(1))) }
+    return Splitter.on(';')
+        .omitEmptyStrings()
+        .split(boosters)
+        .map {
+            Boosters.valueOf(it[0].toString()) to parsePoint(it.substring(1))
+        }
 }

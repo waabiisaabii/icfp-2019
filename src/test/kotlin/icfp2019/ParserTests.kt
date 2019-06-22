@@ -11,6 +11,21 @@ class ParserTests {
     }
 
     @Test
+    fun simpleBoard() {
+        val problem1Input = "(0,0),(6,0),(6,1),(8,1),(8,2),(6,2),(6,3),(0,3)#(0,0)##"
+        val problemDescription = ProblemDescription(ProblemId(1), problem1Input)
+
+        val problem = parseDesc(problemDescription)
+        /* 0 1 2 3 4 5 6 7
+         2 . . . . . . X X
+         1 . . . . . . . .
+         0 . . . . . . X X
+         */
+
+        printBoard(problem)
+    }
+
+    @Test
     fun testFullFile() {
         val problem3Input =
             "(15,23),(16,23),(16,17),(15,17),(15,20),(12,20),(12,19),(10,19),(10,16),(12,16),(12,17),(13,17)," +
@@ -38,17 +53,30 @@ class ParserTests {
         println()
         println("===================")
 
-        (p.size.x - 1).downTo(0).forEach { x ->
-            0.until(p.size.y).forEach { y ->
-                print(
-                    if (p.map[x][y].isObstacle) {
-                        'X'
+        printBoard(p)
+    }
+
+    private fun printBoard(p: Problem) {
+        println("${p.size}")
+        for (y in (p.size.y - 1) downTo 0) {
+            for (x in 0 until p.size.x) {
+                if (p.startingPosition == Point(x, y)) {
+                    print('s')
+                    continue
+                }
+                val node = p.map[x][y]
+                val char = if (node.isObstacle) {
+                    'X'
+                } else {
+                    if (node.booster != null) {
+                        'o'
                     } else {
                         '.'
                     }
-                )
+                }
+                print(char)
+                print(' ')
             }
-
             println()
         }
     }
@@ -57,7 +85,7 @@ class ParserTests {
     fun testBoosterParser() {
         val boosters = "X(16,25);L(19,19);F(4,30);F(17,21);B(4,31)"
         val actual = parseBoosters(boosters)
-        val expected = listOf<Pair<Boosters, Point>>(
+        val expected = listOf(
             Pair(Boosters.X, Point(16, 25)),
             Pair(Boosters.L, Point(19, 19)),
             Pair(Boosters.F, Point(4, 30)),
