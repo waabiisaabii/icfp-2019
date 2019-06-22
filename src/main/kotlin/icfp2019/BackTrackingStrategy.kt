@@ -5,7 +5,7 @@ import java.util.*
 
 // Move to an open space and push moves onto a stack, if no moves available then backtrack using the stack
 class BackTrackingStrategy : Strategy {
-    override fun getActions(gameState: GameState): Map<Int, List<Action>> {
+    override fun getActions(gameState: GameState): Map<RobotId, List<Action>> {
         val stack = Stack<Action>()
         val moveList = mutableListOf<Action>()
         val tEngine = TransitionEngine()
@@ -20,7 +20,8 @@ class BackTrackingStrategy : Strategy {
                 } else {
                     val backTrackAction = stack.pop().invert() ?: throw IllegalStateException("Non-invertable action!")
 
-                    currentState = tEngine.apply(currentState, hashMapOf(Pair<Int, Action>(0, backTrackAction)))
+                    currentState = tEngine.apply(currentState, hashMapOf(
+                        Pair<RobotId, Action>(RobotId(0), backTrackAction)))
                     stack.push(backTrackAction)
                     moveList.add(backTrackAction)
                     availableMoves = availableMoves(gameState)
@@ -28,24 +29,21 @@ class BackTrackingStrategy : Strategy {
             } else {
                 // Else take the first available move
                 val action = availableMoves.get(0)
-                currentState = tEngine.apply(currentState, hashMapOf(Pair<Int, Action>(0, action)))
+                currentState = tEngine.apply(currentState, hashMapOf(
+                    Pair<RobotId, Action>(RobotId(0), action)))
                 stack.push(action)
                 moveList.add(action)
                 availableMoves = availableMoves(gameState)
             }
         } while (stack.isNotEmpty() || availableMoves.isNotEmpty())
 
-        val plans = hashMapOf<Int, List<Action>>(
-            Pair<Int, List<Action>>(0, moveList))
+        val plans = hashMapOf<RobotId, List<Action>>(
+            Pair<RobotId, List<Action>>(RobotId(0), moveList))
 
         return plans
     }
 
     fun availableMoves(gameState: GameState): List<Action> {
-        if (gameState.robotStateList.isEmpty()) {
-            return listOf()
-        }
-
         val moves = mutableListOf<Action>()
 
         val currentPosition = gameState.robotStateList[0].currentPosition
