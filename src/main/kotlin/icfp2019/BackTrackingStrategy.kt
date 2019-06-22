@@ -42,11 +42,44 @@ class BackTrackingStrategy : Strategy {
     }
 
     fun availableMoves(gameState: GameState): List<Action> {
-        // TODO: Implemenet available moves
-        if (gameState.gameBoard.isNotEmpty()) {
-            print("hi!")
+        if (gameState.robotStateList.isEmpty()) {
+            return listOf()
         }
 
-        return listOf<Action>()
+        val moves = mutableListOf<Action>()
+
+        val currentPosition = gameState.robotStateList[0].currentPosition
+
+        if (currentPosition.y + 1 < gameState.gameBoard.height) {
+            val up = gameState.gameBoard.get(currentPosition.x, currentPosition.y + 1)
+            if (!Cell.hasFlag(up, Cell.WRAPPED) && !Cell.hasFlag(up, Cell.OBSTACLE)) {
+                moves.add(MoveUp)
+            }
+        }
+
+        if (currentPosition.y - 1 > -1) {
+            val down = gameState.gameBoard.get(currentPosition.x, currentPosition.y - 1)
+            if (!Cell.hasFlag(down, Cell.WRAPPED) && !Cell.hasFlag(down, Cell.OBSTACLE)) {
+                moves.add(MoveDown)
+            }
+        }
+
+        if (currentPosition.x - 1 > -1) {
+            val left = gameState.gameBoard.get(currentPosition.x - 1, currentPosition.y)
+            if (!Cell.hasFlag(left, Cell.WRAPPED) && !Cell.hasFlag(left, Cell.OBSTACLE)) {
+                moves.add(MoveLeft)
+            }
+        }
+
+        if (currentPosition.x + 1 < gameState.gameBoard.width) {
+            val right = gameState.gameBoard.get(currentPosition.x + 1, currentPosition.y)
+            if (!Cell.hasFlag(right, Cell.WRAPPED) && !Cell.hasFlag(right, Cell.OBSTACLE)) {
+                moves.add(MoveUp)
+            }
+        }
+
+        // do we care about the last move so we continue in that direction? would need it first in the list
+
+        return moves
     }
 }
