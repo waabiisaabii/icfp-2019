@@ -13,7 +13,7 @@ class ParserTests {
     @Test
     fun simpleBoard() {
         val problem1Input = "(0,0),(6,0),(6,1),(8,1),(8,2),(6,2),(6,3),(0,3)#(0,0)##"
-        val problemDescription = ProblemDescription(ProblemId(1), problem1Input)
+        val problemDescription = ProblemParseInput(ProblemId(1), problem1Input)
 
         val problem = parseDesc(problemDescription)
         /* 0 1 2 3 4 5 6 7
@@ -37,7 +37,7 @@ class ParserTests {
                     "(23,3),(23,4),(24,4),(24,3),(25,3),(25,7),(26,7),(26,13),(24,13),(24,14),(23,14),(23,13),(22,13),(22,14)," +
                     "(21,14),(21,13),(20,13)#X(16,25);L(19,19);F(4,30);F(17,21);B(4,31)"
 
-        val problem = ProblemDescription(ProblemId(3), problem3Input)
+        val problem = ProblemParseInput(ProblemId(3), problem3Input)
         val p = parseDesc(problem)
 
         p.map[4].forEach { x ->
@@ -86,11 +86,11 @@ class ParserTests {
         val boosters = "X(16,25);L(19,19);F(4,30);F(17,21);B(4,31)"
         val actual = parseBoosters(boosters)
         val expected = listOf(
-            Pair(Boosters.X, Point(16, 25)),
-            Pair(Boosters.L, Point(19, 19)),
-            Pair(Boosters.F, Point(4, 30)),
-            Pair(Boosters.F, Point(17, 21)),
-            Pair(Boosters.B, Point(4, 31))
+            Pair(Booster.CloningLocation, Point(16, 25)),
+            Pair(Booster.Drill, Point(19, 19)),
+            Pair(Booster.FastWheels, Point(4, 30)),
+            Pair(Booster.FastWheels, Point(17, 21)),
+            Pair(Booster.ExtraArm, Point(4, 31))
         )
         Assertions.assertEquals(actual, expected)
     }
