@@ -1,7 +1,6 @@
 package icfp2019
 
 data class GameBoard(
-    val problem: Problem,
     val cells: Array<Short>,
     val width: Int,
     val height: Int
@@ -28,12 +27,12 @@ data class GameBoard(
                 }
             }
 
-            return GameBoard(problem, cells, problem.size.x, problem.size.y)
+            return GameBoard(cells, problem.size.x, problem.size.y)
         }
     }
 
     fun isInBoard(point: Point): Boolean {
-        return (point.x >= 0 && point.x < problem.size.x && point.y >= 0 && point.y < problem.size.y)
+        return (point.x >= 0 && point.x < width && point.y >= 0 && point.y < height)
     }
 
     fun get(point: Point): Short {
@@ -49,6 +48,14 @@ data class GameBoard(
         }
         val newCells = cells.clone()
         newCells[point.x * height + point.y] = value
-        return GameBoard(problem, newCells, width, height)
+        return GameBoard(newCells, width, height)
+    }
+
+    // Return a sequence of rows, which is a sequence of values
+
+    fun rows(): List<List<Short>> {
+        return (0 until height).map { y ->
+            (0 until width).map { x -> get(Point(x, y)) }
+        }
     }
 }
