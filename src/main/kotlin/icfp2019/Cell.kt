@@ -11,7 +11,7 @@ class Cell {
         // Values for cell properties
         val OBSTACLE: Short = 1 // This cell is a wall/obstacle
         val WRAPPED: Short = 2 // This cell has been 'wrapped' by the bot
-        val MYSTERY: Short = 4 // This cell contains a 'mystery' object
+        val SPAWN_POINT: Short = 4 // This cell contains a 'spawn' object where cloning can occur
         val BOOST_EXT: Short = 8 // This cell contains an unclaimed extension boost
         val BOOST_FAST: Short = 16 // This cell contains an unclaimed fast wheels boost
         val BOOST_DRILL: Short = 32 // This cell contains an unclaimed drill boost

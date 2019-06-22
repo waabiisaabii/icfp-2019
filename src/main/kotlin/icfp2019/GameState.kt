@@ -9,33 +9,52 @@ data class GameState(
 
     fun availableMoves(point: Point): List<Action> {
         val moves = mutableListOf<Action>()
+        val cell = gameBoard.get(point.x, point.y)
 
-        if (point.y + 1 < gameBoard.height) {
-            val up = gameBoard.get(point.x, point.y + 1)
-            if (!Cell.hasFlag(up, Cell.WRAPPED) && !Cell.hasFlag(up, Cell.OBSTACLE)) {
-                moves.add(Action.MoveUp)
-            }
+        // Asking about a bad location... No moves
+        if (!gameBoard.isInBoard(point.x, point.y)) {
+            return moves
         }
 
-        if (point.y - 1 > -1) {
-            val down = gameBoard.get(point.x, point.y - 1)
-            if (!Cell.hasFlag(down, Cell.WRAPPED) && !Cell.hasFlag(down, Cell.OBSTACLE)) {
-                moves.add(Action.MoveDown)
-            }
+        // Things independent of point or location
+        moves.add(Action.DoNothing)
+        moves.add(Action.TurnClockwise)
+        moves.add(Action.TurnCounterClockwise)
+        moves.add(Action.PlantTeleportResetPoint)
+        for (location: Point in teleportDestination) {
+            moves.add(Action.TeleportBack(location))
         }
 
-        if (point.x - 1 > -1) {
-            val left = gameBoard.get(point.x - 1, point.y)
-            if (!Cell.hasFlag(left, Cell.WRAPPED) && !Cell.hasFlag(left, Cell.OBSTACLE)) {
-                moves.add(Action.MoveLeft)
-            }
+        // Check directions
+        if (gameBoard.isInBoard(point.x, point.y + 1) &&
+                !Cell.hasFlag(cell, Cell.OBSTACLE)) {
+            moves.add(Action.MoveUp)
+        }
+        if (gameBoard.isInBoard(point.x, point.y - 1) &&
+            !Cell.hasFlag(cell, Cell.OBSTACLE)) {
+            moves.add(Action.MoveDown)
+        }
+        if (gameBoard.isInBoard(point.x + 1, point.y) &&
+            !Cell.hasFlag(cell, Cell.OBSTACLE)) {
+            moves.add(Action.MoveRight)
+        }
+        if (gameBoard.isInBoard(point.x - 1, point.y) &&
+            !Cell.hasFlag(cell, Cell.OBSTACLE)) {
+            moves.add(Action.MoveRight)
         }
 
-        if (point.x + 1 < gameBoard.width) {
-            val right = gameBoard.get(point.x + 1, point.y)
-            if (!Cell.hasFlag(right, Cell.WRAPPED) && !Cell.hasFlag(right, Cell.OBSTACLE)) {
-                moves.add(Action.MoveRight)
-            }
+        // Check Boosters
+        if (Cell.hasFlag(cell, Cell.BOOST_CLONE) ||
+            Cell.hasFlag(cell, Cell.BOOST_TELEPORT) ||
+            Cell.hasFlag(cell, Cell.BOOST_FAST) ||
+            Cell.hasFlag(cell, Cell.BOOST_DRILL) ||
+            Cell.hasFlag(cell, Cell.BOOST_EXT)) {
+            moves.add(Action.AttachManipulator(point))
+        }
+
+        // Are we on a clone point?
+        if (Cell.hasFlag(cell, Cell.SPAWN_POINT)) {
+            moves.add(Action.CloneRobot)
         }
 
         return moves

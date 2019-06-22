@@ -14,11 +14,11 @@ class BitMaskTests {
         val cellValue3 = Cell.unsetFlag(cellValue2, Cell.OBSTACLE)
         Assertions.assertFalse(Cell.hasFlag(cellValue3, Cell.OBSTACLE))
 
-        val cellValue4 = Cell.setFlags(cellValue3, Cell.OBSTACLE, Cell.BOOST_DRILL, Cell.MYSTERY, Cell.WRAPPED)
+        val cellValue4 = Cell.setFlags(cellValue3, Cell.OBSTACLE, Cell.BOOST_DRILL, Cell.SPAWN_POINT, Cell.WRAPPED)
         Assertions.assertTrue(Cell.hasFlag(cellValue4, Cell.OBSTACLE))
         Assertions.assertTrue(Cell.hasFlag(cellValue4, Cell.WRAPPED))
         Assertions.assertTrue(Cell.hasFlag(cellValue4, Cell.BOOST_DRILL))
-        Assertions.assertTrue(Cell.hasFlag(cellValue4, Cell.MYSTERY))
+        Assertions.assertTrue(Cell.hasFlag(cellValue4, Cell.SPAWN_POINT))
         Assertions.assertFalse(Cell.hasFlag(cellValue4, Cell.BOOST_EXT))
         Assertions.assertFalse(Cell.hasFlag(cellValue4, Cell.BOOST_TELEPORT))
         Assertions.assertFalse(Cell.hasFlag(cellValue4, Cell.BOOST_FAST))
