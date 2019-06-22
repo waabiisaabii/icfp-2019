@@ -7,12 +7,12 @@ data class GameState(
     val unusedBoosters: List<Booster>
 ) {
 
-    fun availableMoves(point: Point): List<Action> {
+    fun availableMoves(robot: RobotState): List<Action> {
         val moves = mutableListOf<Action>()
-        val cell = gameBoard.get(point)
+        val cell = gameBoard.get(robot.currentPosition)
 
         // Asking about a bad location... No moves
-        if (!gameBoard.isInBoard(point)) {
+        if (!gameBoard.isInBoard(robot.currentPosition)) {
             return moves
         }
 
@@ -30,19 +30,19 @@ data class GameState(
         }
 
         // Check directions
-        if (canMoveTo(point.up())) {
+        if (canMoveTo(robot.currentPosition.up())) {
             moves.add(Action.MoveUp)
         }
 
-        if (canMoveTo(point.down())) {
+        if (canMoveTo(robot.currentPosition.down())) {
             moves.add(Action.MoveDown)
         }
 
-        if (canMoveTo(point.right())) {
+        if (canMoveTo(robot.currentPosition.right())) {
             moves.add(Action.MoveRight)
         }
 
-        if (canMoveTo(point.left())) {
+        if (canMoveTo(robot.currentPosition.left())) {
             moves.add(Action.MoveLeft)
         }
 
