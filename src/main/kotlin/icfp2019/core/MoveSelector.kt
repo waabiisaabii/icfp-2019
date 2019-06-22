@@ -11,6 +11,8 @@ object DefaultMoveSelector : MoveSelector {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
+    // This code is wrong now
+    /*
     fun availableMoves(robot: RobotState, gameState: GameState): List<Action> {
         val moves = mutableListOf<Action>()
         val cell = gameState.gameBoard.get(robot.currentPosition)
@@ -57,4 +59,5 @@ object DefaultMoveSelector : MoveSelector {
 
         return moves
     }
+     */
 }
