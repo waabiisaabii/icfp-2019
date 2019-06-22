@@ -5219,8 +5219,8 @@ var yMax = 0;
             }(a, c)));
             Eg(c, b.Sf, Gg().Zj)
 
-        document.getElementById('sizeX').innerHTML =xMax+1;
-        document.getElementById('sizeY').innerHTML =yMax+1;
+        document.getElementById('sizeX').innerHTML = xMax;
+        document.getElementById('sizeY').innerHTML = yMax;
 
         c.ac.strokeStyle = "#AA0000";
         c.ac.fillStyle = "#AAA";
