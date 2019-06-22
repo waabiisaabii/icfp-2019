@@ -13,7 +13,7 @@ sealed class Action {
         StartDrill -> "L"
         PlantTeleportResetPoint -> "R"
         CloneRobot -> "C"
-        is AttachManipulator -> "A(${this.point.x}, ${this.point.y})"
+        is AttachManipulator -> "A(${this.point.x},${this.point.y})"
         is TeleportBack -> "T(${this.targetResetPoint.x},${this.targetResetPoint.x})"
     }
 
