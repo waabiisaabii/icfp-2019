@@ -38,3 +38,9 @@ tasks.withType<Test>().configureEach {
 
     failFast = true
 }
+
+tasks.register("run", JavaExec::class) {
+    classpath = sourceSets.getByName("main").runtimeClasspath
+
+    main = "icfp2019.AppKt"
+}
