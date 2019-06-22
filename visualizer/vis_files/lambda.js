@@ -5240,8 +5240,8 @@ var yMax = 0;
         }
         for (var lx = 0; lx < xMax + 1; lx += 1) {
           c.ac.beginPath();
-          x = Dg(c, new uf(lx, 0));
-          y = Dg(c, new uf(lx, yMax));
+          var x = Dg(c, new uf(lx, 0));
+          var y = Dg(c, new uf(lx, yMax));
           c.ac.moveTo(x.k, x.l);
           c.ac.lineTo(y.k, y.l);
           c.ac.stroke();
@@ -5251,13 +5251,13 @@ var yMax = 0;
         }
         for (var lx = 0; lx < yMax + 1; lx += 1) {
           c.ac.beginPath();
-          x = Dg(c, new uf(0, lx));
-          y = Dg(c, new uf(xMax, lx));
+          var x = Dg(c, new uf(0, lx));
+          var y = Dg(c, new uf(xMax, lx));
           c.ac.moveTo(x.k, x.l);
           c.ac.lineTo(y.k, y.l);
           c.ac.stroke();
           if (lx % rowSkip == 0) {
-            c.ac.fillText(lx, x.k+10, x.l+10);
+              c.ac.fillText(lx, x.k + 10, x.l + 10);
           }
         }
     }
@@ -7404,6 +7404,7 @@ var yMax = 0;
             }
             return a.Vn
         }
+
         function vo() {
             this.Vn = null;
             this.q = 0
