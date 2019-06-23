@@ -1,7 +1,6 @@
 package icfp2019.strategies
 
 import icfp2019.analyzers.GraphAnalyzer
-import icfp2019.analyzers.MoveListAnalyzer
 import icfp2019.analyzers.ShortestPathUsingFlyodWarshall
 import icfp2019.core.DistanceEstimate
 import icfp2019.core.Proposal
@@ -36,8 +35,7 @@ object DFSStrategy : Strategy {
 
                 val nextNode = pathToClosestNode!!.vertexList[0]
                 Proposal(DistanceEstimate(0), currentPoint.actionToGetToNeighbor(nextNode.point))
-            }
-            else {
+            } else {
                 val neighbor = it.next().point
                 Proposal(DistanceEstimate(0), currentPoint.actionToGetToNeighbor(neighbor))
             }
