@@ -40,9 +40,16 @@ fun printBoard(p: Problem, path: Set<Node> = setOf()) {
     println()
 }
 
+fun String.toProblem(): Problem {
+    return parseTestMap(this)
+}
+
 fun parseTestMap(map: String): Problem {
     val mapLineSplitter = Splitter.on(CharMatcher.anyOf("\r\n")).omitEmptyStrings()
-    val lines = mapLineSplitter.splitToList(map).map { CharMatcher.whitespace().removeFrom(it) }.reversed()
+    val lines = mapLineSplitter.splitToList(map)
+        .map { CharMatcher.whitespace().removeFrom(it) }
+        .filter { it.isBlank().not() }
+        .reversed()
     val height = lines.size
     val width = lines[0].length
     if (lines.any { it.length != width }) throw IllegalArgumentException("Inconsistent map line lengths")

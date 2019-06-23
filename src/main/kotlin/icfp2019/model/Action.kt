@@ -15,6 +15,7 @@ sealed class Action {
         CloneRobot -> "C"
         is AttachManipulator -> "A(${this.point.x},${this.point.y})"
         is TeleportBack -> "T(${this.targetResetPoint.x},${this.targetResetPoint.y})"
+        Initialize -> throw IllegalArgumentException("Initialize cannot be part of a solution")
     }
 
     fun invert(): Action? = when (this) {
@@ -25,6 +26,7 @@ sealed class Action {
         else -> null
     }
 
+    object Initialize : Action()
     object MoveUp : Action()
     object MoveDown : Action()
     object MoveLeft : Action()
