@@ -1,11 +1,11 @@
 package icfp2019
 
-import icfp2019.analyzers.DistanceToWalls
 import icfp2019.model.*
+import icfp2019.strategies.EatCloserThenFarther
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class DistanceToWallsTests {
+class EatCloserThenFatherTests {
     @Test
     fun testSimple() {
         val problem3Input =
@@ -19,16 +19,35 @@ class DistanceToWallsTests {
                     "(21,14),(21,13),(20,13)#X(16,25);L(19,19);F(4,30);F(17,21);B(4,31)"
 
         val p = parseDesc(problem3Input)
-        val robotId = RobotId(0)
+        val gs = GameState.gameStateOf(p, Point(20, 0))
+        val s = EatCloserThenFarther().compute(gs)
+        val m1 = s(gs)
+        Assertions.assertEquals(Action.MoveRight, m1.nextMove)
+    }
 
-        val gs1 = GameState.gameStateOf(p, Point(20, 0))
-        val analyzer1 = DistanceToWalls().analyze(gs1)
-        val r1 = analyzer1(robotId, gs1)
-        Assertions.assertEquals(8, r1.value)
+    @Test
+    fun test2() {
+        val problem = """
+        ...XX
+        w@...
+        .w.XX
+    """.toProblem()
+        val gs = GameState.gameStateOf(problem)
+        val s = EatCloserThenFarther().compute(gs)
+        val m1 = s(gs)
+        Assertions.assertEquals(Action.MoveUp, m1.nextMove)
+    }
 
-        val gs2 = GameState.gameStateOf(p, Point(22, 0))
-        val analyzer2 = DistanceToWalls().analyze(gs1)
-        val r2 = analyzer2(robotId, gs2)
-        Assertions.assertEquals(6, r2.value)
+    @Test
+    fun test3() {
+        val problem = """
+        .w.XX
+        w@...
+        .w.XX
+    """.toProblem()
+        val gs = GameState.gameStateOf(problem)
+        val s = EatCloserThenFarther().compute(gs)
+        val m1 = s(gs)
+        Assertions.assertEquals(Action.MoveRight, m1.nextMove)
     }
 }
