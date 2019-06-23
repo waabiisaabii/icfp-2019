@@ -1,15 +1,14 @@
 package icfp2019.analyzers
 
-import icfp2019.model.GameBoard
 import icfp2019.model.GameState
-import icfp2019.core.Analyzer
+import icfp2019.core.Analyzer3
 
 data class WrappedUnwrapped(val wrapped: Int, val unwrapped: Int)
 
-object GetNumberOfWrappedOrNot : Analyzer<WrappedUnwrapped> {
-    override fun analyze(map: GameBoard): (state: GameState) -> WrappedUnwrapped {
-        return { _ ->
-            map.cells
+object GetNumberOfWrappedOrNot : Analyzer3<WrappedUnwrapped> {
+    override fun analyze(initialState: GameState): (state: GameState) -> WrappedUnwrapped {
+        return { state ->
+            state.cells
                 .flatten()
                 .map {
                     if (it.isWrapped) {

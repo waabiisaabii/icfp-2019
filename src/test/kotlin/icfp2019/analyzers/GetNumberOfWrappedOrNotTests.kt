@@ -1,9 +1,6 @@
 package icfp2019.analyzers
 
-import icfp2019.model.GameBoard
-import icfp2019.model.GameState
-import icfp2019.model.Node
-import icfp2019.model.Point
+import icfp2019.model.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.pcollections.TreePVector
@@ -11,7 +8,7 @@ import org.pcollections.TreePVector
 class GetNumberOfWrappedOrNotTests {
     @Test
     fun testSimple() {
-        var g = GameBoard(
+        var g = GameState.gameStateOf(
             TreePVector.from(
                 listOf(
                     TreePVector.from(
@@ -33,8 +30,7 @@ class GetNumberOfWrappedOrNotTests {
                         )
                     )
                 )
-            ), 3, 2
-        )
+            ), MapSize(3, 2), Point(0, 0))
 
         val columns = g.cells
         Assertions.assertEquals(3, columns.size)
@@ -42,7 +38,7 @@ class GetNumberOfWrappedOrNotTests {
         Assertions.assertEquals(2, columns[1].size)
         Assertions.assertEquals(2, columns[2].size)
 
-        val results = GetNumberOfWrappedOrNot.analyze(g)(GameState.gameStateOf(Point(0, 0)))
+        val results = GetNumberOfWrappedOrNot.analyze(g)(g)
         Assertions.assertEquals(2, results.wrapped)
         Assertions.assertEquals(4, results.unwrapped)
     }
