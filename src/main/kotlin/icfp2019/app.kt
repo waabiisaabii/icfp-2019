@@ -10,10 +10,10 @@ fun main(args: Array<String>) {
     path.toFile().walk().forEach {
         if (it.isFile && it.extension.equals("desc")) {
             println("Running " + it.name)
-            val problem = parseDesc(it.readText())
+            val problem = parseDesc(it.readText(), "Test")
             val solution = brain(problem, listOf(DFSStrategy), 1)
             File(it.parent, "${it.nameWithoutExtension}.sol").writeBytes(solution.toString().toByteArray())
-            println("Summary: ${solution.summary()}")
+            println(solution.summary())
         }
     }
 }
