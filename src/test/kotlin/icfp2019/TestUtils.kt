@@ -57,17 +57,19 @@ fun parseTestMap(map: String): Problem {
                 else null
             }
         }.flatten().find { it != null } ?: Point.origin()
-    return Problem(MapSize(width, height), startPoint, TreePVector.from((0 until width).map { y ->
-        TreePVector.from((0 until height).map { x ->
-            val point = Point(x, y)
-            when (val char = lines[x][y]) {
-                'X' -> Node(point, isObstacle = true)
-                'w' -> Node(point, isObstacle = false, isWrapped = true)
-                '.' -> Node(point, isObstacle = false)
-                '@' -> Node(point, isObstacle = false)
-                in Booster.parseChars -> Node(point, isObstacle = false, booster = Booster.fromChar(char))
-                else -> throw IllegalArgumentException("Unknown Char '$char'")
-            }
+    return Problem(MapSize(width, height), startPoint,
+        TreePVector.from((0 until width).map { x ->
+            TreePVector.from((0 until height).map { y ->
+                val point = Point(x, y)
+                when (val char = lines[y][x]) {
+                    'X' -> Node(point, isObstacle = true)
+                    'w' -> Node(point, isObstacle = false, isWrapped = true)
+                    '.' -> Node(point, isObstacle = false)
+                    '@' -> Node(point, isObstacle = false)
+                    in Booster.parseChars -> Node(point, isObstacle = false, booster = Booster.fromChar(char))
+                    else -> throw IllegalArgumentException("Unknown Char '$char'")
+                }
+            })
         })
-    }))
+    )
 }
