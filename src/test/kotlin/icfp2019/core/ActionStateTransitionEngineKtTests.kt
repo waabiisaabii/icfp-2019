@@ -1,8 +1,6 @@
 package icfp2019.core
 
-import icfp2019.model.Action
-import icfp2019.model.GameState
-import icfp2019.model.RobotId
+import icfp2019.model.*
 import icfp2019.toProblem
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -10,7 +8,7 @@ import org.junit.jupiter.api.Test
 internal class ActionStateTransitionEngineKtTests {
 
     @Test
-    fun testApplyMove() {
+    fun verifyMovements() {
         val problem = """
                         ..
                         @.
@@ -34,6 +32,26 @@ internal class ActionStateTransitionEngineKtTests {
             startingPosition,
             backToOrigin.robotState.getValue(RobotId.first).currentPosition
         )
+    }
+
+    @Test
+    fun verifyPickupBooster() {
+
+        val problem = "l@".toProblem()
+        val gameState = GameState.gameStateOf(problem)
+
+        Assertions.assertEquals(
+            Node(Point.origin(), isObstacle = false, booster = Booster.Drill),
+            gameState.get(Point.origin())
+        )
+
+        listOf(Action.MoveLeft).applyTo(gameState).let {
+            Assertions.assertIterableEquals(listOf(Booster.Drill), it.unusedBoosters)
+            Assertions.assertEquals(
+                Node(Point.origin(), isObstacle = false, isWrapped = true, booster = null),
+                it.get(Point.origin())
+            )
+        }
     }
 
     @Test

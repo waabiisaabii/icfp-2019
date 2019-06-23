@@ -2,10 +2,7 @@ package icfp2019
 
 import com.google.common.base.CharMatcher
 import com.google.common.base.Splitter
-import icfp2019.model.MapSize
-import icfp2019.model.Node
-import icfp2019.model.Point
-import icfp2019.model.Problem
+import icfp2019.model.*
 import org.pcollections.TreePVector
 import java.nio.file.Paths
 
@@ -63,12 +60,13 @@ fun parseTestMap(map: String): Problem {
     return Problem(MapSize(width, height), startPoint, TreePVector.from((0 until width).map { y ->
         TreePVector.from((0 until height).map { x ->
             val point = Point(x, y)
-            when (lines[x][y]) {
+            when (val char = lines[x][y]) {
                 'X' -> Node(point, isObstacle = true)
                 'w' -> Node(point, isObstacle = false, isWrapped = true)
                 '.' -> Node(point, isObstacle = false)
                 '@' -> Node(point, isObstacle = false)
-                else -> throw IllegalArgumentException("Unknown Char '${lines[x][y]}'")
+                in Booster.parseChars -> Node(point, isObstacle = false, booster = Booster.fromChar(char))
+                else -> throw IllegalArgumentException("Unknown Char '$char'")
             }
         })
     }))

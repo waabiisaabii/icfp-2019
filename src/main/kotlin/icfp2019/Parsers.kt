@@ -123,6 +123,6 @@ fun parseBoosters(boosters: String): List<ParsedBooster> {
     return Splitters.SEMI_SPLITTER
         .split(boosters)
         .map {
-            ParsedBooster(Booster.fromString(it[0]), parsePoint(it.substring(1)))
+            ParsedBooster(Booster.fromChar(it[0]), parsePoint(it.substring(1)))
         }
 }
