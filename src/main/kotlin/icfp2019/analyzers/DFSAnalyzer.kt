@@ -8,6 +8,6 @@ import icfp2019.strategies.DFSStrategy
 
 object DFSAnalyzer : Analyzer<Iterable<Action>> {
     override fun analyze(map: GameBoard): (state: GameState) -> Iterable<Action> {
-        return { graphState -> DFSStrategy.compute(map).invoke(graphState) }
+        return { graphState -> listOf(DFSStrategy.compute(map).invoke(graphState).nextMove) }
     }
 }

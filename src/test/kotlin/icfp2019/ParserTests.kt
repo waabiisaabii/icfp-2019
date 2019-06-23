@@ -103,7 +103,7 @@ class ParserTests {
                 "X X X . . . . . . . . . X X X . o . . . . . . . X X X\n" +
                 "X X X . . . . . . . . . X . . . . . . X X X X X X X X\n" +
                 "X X X X X X X X X . . . . . . . . . . X X X X X X X X\n" +
-                "s . . . . . . . . . . . . . . X . . . . . . X X X X X\n" +
+                "@ . . . . . . . . . . . . . . X . . . . . . X X X X X\n" +
                 "X X X X X X X X X . . . . X X X . o . . . . X X X X X\n" +
                 "X X X X X X X X X X X X X X X X . . . . . . X X X X X\n" +
                 "X X X X X X X X X X X X . . . X . . . o . . X X X X X\n" +
