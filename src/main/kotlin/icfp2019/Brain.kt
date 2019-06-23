@@ -101,7 +101,7 @@ fun brain(
     problem: Problem,
     strategies: Iterable<Strategy>,
     maximumSteps: Int
-): String {
+): Solution {
     var gameState = GameState.gameStateOf(problem)
     val actions = mutableMapOf<RobotId, List<Action>>()
     while (!gameState.isGameComplete()) {
@@ -113,5 +113,5 @@ fun brain(
         }
     }
 
-    return actions.encodeActions()
+    return Solution(actions)
 }
