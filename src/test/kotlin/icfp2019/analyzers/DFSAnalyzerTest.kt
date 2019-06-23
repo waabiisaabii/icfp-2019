@@ -33,7 +33,12 @@ class DFSAnalyzerTest {
         )
 
         val robotState = RobotState(RobotId(0), Point(0, 0), Orientation.Up, 0)
-        val gameState = GameState(listOf(robotState), listOf(), listOf())
+        val gameState = GameState(
+            gameBoard.cells,
+            MapSize(gameBoard.width, gameBoard.height),
+            listOf(robotState),
+            listOf(),
+            listOf())
         val analyzer = DFSAnalyzer.analyze(gameBoard)
         val listOfActions = analyzer.invoke(gameState)
         println(listOfActions)
