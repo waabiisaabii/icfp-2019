@@ -25,7 +25,7 @@ object BFSStrategy : Strategy {
             val unwrappedGraph =
                 AsSubgraph(graph, graph.vertexSet().filter { it.isWrapped.not() }.plus(currentNode).toSet())
 
-            val it: GraphIterator<Node, DefaultEdge> = BreadthFirstIterator(unwrappedGraph, currentNode)
+            val bfsIterator: GraphIterator<Node, DefaultEdge> = BreadthFirstIterator(unwrappedGraph, currentNode)
 
             val neighbors = currentNode.point.neighbors()
                 .filter { gameState.isInBoard(it) }
@@ -33,8 +33,8 @@ object BFSStrategy : Strategy {
             if (neighbors.any {
                     it.isWrapped.not() && it.isObstacle.not()
                 }) {
-                it.next() // move past currentNode
-                val neighbor = it.next().point
+                bfsIterator.next() // move past currentNode
+                val neighbor = bfsIterator.next().point
                 currentPoint.actionToGetToNeighbor(neighbor)
             } else {
                 val analyze = ShortestPathUsingDijkstra.analyze(gameState)
