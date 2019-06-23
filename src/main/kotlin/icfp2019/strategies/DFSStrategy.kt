@@ -35,9 +35,6 @@ object DFSStrategy : Strategy {
                     .minBy { it.length }
 
                 val nextNode = pathToClosestNode!!.vertexList[0]
-                // use floyd to analyze and find node(s) with shortest distance
-                // use dijkstra to get path to shortest-distance-node
-                // Proposal with first node on that path
                 Proposal(DistanceEstimate(0), currentPoint.actionToGetToNeighbor(nextNode.point))
             }
             else {
