@@ -9,16 +9,7 @@ object MoveAnalyzer : Analyzer<(RobotId, Action) -> Boolean> {
             { robotId, action ->
                 var possible = false
 
-                fun getRobotState(robotId: RobotId): RobotState? {
-                    for (state: RobotState in gameState.robotStateList) {
-                        if (state.robotId == robotId) {
-                            return state
-                        }
-                    }
-                    return null
-                }
-
-                val robotState = getRobotState(robotId)
+                val robotState = gameState.robotState[robotId]
                 if (robotState != null &&
                     map.isInBoard(robotState.currentPosition)) {
                     val cell = map.get(robotState.currentPosition)

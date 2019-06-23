@@ -5,10 +5,7 @@ import icfp2019.analyzers.MoveListAnalyzer
 import icfp2019.core.DistanceEstimate
 import icfp2019.core.Proposal
 import icfp2019.core.Strategy
-import icfp2019.model.Action
-import icfp2019.model.GameBoard
-import icfp2019.model.GameState
-import icfp2019.model.Node
+import icfp2019.model.*
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.traverse.DepthFirstIterator
@@ -31,7 +28,9 @@ object DFSStrategy : Strategy {
                         when (!currentNode.isWrapped) {
                             true -> MoveListAnalyzer.analyze(map)
                                 .invoke(gameState)
-                                .invoke(gameState.robotStateList.get(0).robotId)
+                                .invoke(
+                                    (gameState.robotState[RobotId.first] ?: error("unable to find first robot")).robotId
+                                )
                             false -> listOf()
                         }
                     traversalList.add(pickMove(moves))

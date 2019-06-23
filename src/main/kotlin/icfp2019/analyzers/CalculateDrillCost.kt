@@ -1,6 +1,6 @@
 package icfp2019.analyzers
 
-import icfp2019.*
+import icfp2019.Direction
 import icfp2019.core.Analyzer
 import icfp2019.model.DrillState
 import icfp2019.model.GameBoard
@@ -13,7 +13,7 @@ object CalculateDrillCost : Analyzer<List<Array<DrillState>>> {
 
         val currentGrid = buildDrillRequiredFromEachNode(map.cells)
         return { gameState ->
-            gameState.robotStateList.map { state ->
+            gameState.robotState.values.map { state ->
                 currentGrid[state.currentPosition.x][state.currentPosition.y]
             }
         }
@@ -58,7 +58,8 @@ object CalculateDrillCost : Analyzer<List<Array<DrillState>>> {
                         .count()
                     DrillState(Direction.D, downDir)
 
-                    arrayOf(DrillState(Direction.R, rightDir),
+                    arrayOf(
+                        DrillState(Direction.R, rightDir),
                         DrillState(Direction.L, leftDir),
                         DrillState(Direction.U, upDir),
                         DrillState(Direction.D, downDir)

@@ -1,8 +1,8 @@
 package icfp2019.analyzers
 
+import icfp2019.core.Analyzer3
 import icfp2019.model.GameState
 import icfp2019.model.Node
-import icfp2019.core.Analyzer3
 import org.pcollections.PVector
 
 class DistanceToWalls : Analyzer3<List<Int>> {
@@ -30,7 +30,7 @@ class DistanceToWalls : Analyzer3<List<Int>> {
     override fun analyze(initialState: GameState): (state: GameState) -> List<Int> {
         val distanceBoard = applyDistanceAlgorithm(initialState.cells)
         return { state ->
-            state.robotStateList.map { robot ->
+            state.robotState.values.map { robot ->
                 distanceBoard[robot.currentPosition.x][robot.currentPosition.y]
             }
         }
