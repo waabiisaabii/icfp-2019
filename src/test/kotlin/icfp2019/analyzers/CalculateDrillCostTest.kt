@@ -1,13 +1,17 @@
-package icfp2019.model
+package icfp2019.analyzers
 
-import icfp2019.parseDesc
+import icfp2019.*
+import icfp2019.model.DrillState
+import icfp2019.model.GameBoard
+import icfp2019.model.GameState
+import icfp2019.model.Point
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class DrillTests {
+class CalculateDrillCostTest {
 
     @Test
-    fun testGetTotalDrillRequired() {
-
+    fun testDrillCount() {
         val problem3Input =
             "(15,23),(16,23),(16,17),(15,17),(15,20),(12,20),(12,19),(10,19),(10,16),(12,16),(12,17),(13,17)," +
                     "(13,14),(14,14),(14,8),(16,8),(16,15),(18,15),(18,0),(27,0),(27,15),(22,15),(22,23),(19,23)," +
@@ -17,25 +21,17 @@ class DrillTests {
                     "(22,6),(21,6),(21,5),(19,5),(19,4),(20,4),(20,3),(19,3),(19,2),(20,2),(20,1),(21,1),(21,4),(22,4),(22,3)," +
                     "(23,3),(23,4),(24,4),(24,3),(25,3),(25,7),(26,7),(26,13),(24,13),(24,14),(23,14),(23,13),(22,13),(22,14)," +
                     "(21,14),(21,13),(20,13)#X(16,25);L(19,19);F(4,30);F(17,21);B(4,31)"
-
         val p = parseDesc(problem3Input)
-        // In the right direction
-        val drillDistRight = buildDrillRequiredFromEachNode(p)
-        printBoard(drillDistRight)
-    }
-
-    private fun printBoard(map: Array<Array<Array<DrillState>>>) {
-        println("${map.size} ${map[0].size}")
-        val maxX = map.size
-        val maxY = map[0].size
-        for (y in (maxY - 1) downTo 0) {
-            for (x in 0 until maxX) {
-                for (ds in map[x][y]) {
-                    print("(" + ds.direction + "," + ds.value + ")")
-                    print("|")
-                }
-            }
-            println()
-        }
+        val gameBoard = GameBoard(p.map, p.size.x, p.size.y)
+        val drillCost = CalculateDrillCost.analyze(gameBoard)(GameState.empty(Point(0, 0)))
+        val expected = listOf(
+            arrayOf(
+                DrillState(Direction.R, 18),
+                DrillState(Direction.L, 1),
+                DrillState(Direction.U, 22),
+                DrillState(Direction.D, 1)
+            )
+        )
+        Assertions.assertArrayEquals(drillCost.get(0), expected.get(0))
     }
 }
