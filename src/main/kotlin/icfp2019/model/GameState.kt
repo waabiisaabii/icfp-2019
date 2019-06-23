@@ -51,6 +51,17 @@ data class GameState(
             )
     }
 
+    fun isGameComplete(): Boolean {
+        cells.forEach {
+            it.forEach {
+                if (!it.isObstacle && !it.isWrapped) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
     fun isInBoard(point: Point): Boolean {
         return (point.x in 0 until mapSize.x && point.y in 0 until mapSize.y)
     }
