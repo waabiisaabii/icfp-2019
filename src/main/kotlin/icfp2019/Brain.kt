@@ -84,7 +84,6 @@ fun brainStep(
                     .map { strategy ->
                         strategySequence(gameState, strategy, robotId)
                             .take(maximumSteps)
-                            .takeWhile { !it.first.isGameComplete() }
                             .score(robotId, strategy)
                     }
             }
