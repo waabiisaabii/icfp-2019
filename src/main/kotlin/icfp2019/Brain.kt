@@ -104,17 +104,20 @@ fun brain(
     problem: Problem,
     strategies: Iterable<Strategy>,
     maximumSteps: Int
-): Solution {
-    var gameState = GameState(problem)
-    val actions = mutableMapOf<RobotId, List<Action>>()
-    while (!gameState.isGameComplete()) {
-        val (newState, newActions) = brainStep(gameState, strategies, maximumSteps)
+): Sequence<Solution> =
+    generateSequence(
+        seed = GameState(problem) to mapOf<RobotId, List<Action>>(),
+        nextFunction = { (gameState, actions) ->
+            if (gameState.isGameComplete()) {
+                null
+            } else {
+                val (newState, newActions) = brainStep(gameState, strategies, maximumSteps)
+                val mergedActions = actions.toMutableMap()
+                newActions.forEach { (robotId, action) ->
+                    mergedActions.merge(robotId, listOf(action)) { left, right -> left.plus(right) }
+                }
 
-        gameState = newState
-        newActions.forEach { (robotId, action) ->
-            actions.merge(robotId, listOf(action)) { left, right -> left.plus(right) }
+                newState to mergedActions.toMap()
+            }
         }
-    }
-
-    return Solution(problem, actions.toMap())
-}
+    ).map { (_, actions) -> Solution(problem, actions) }
