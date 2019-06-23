@@ -15,6 +15,14 @@ data class Point(val x: Int, val y: Int) {
         else -> false
     }
 
+    fun actionToGetToNeighbor(neighbor: Point): Action = when (neighbor) {
+        left() -> Action.MoveLeft
+        right() -> Action.MoveRight
+        up() -> Action.MoveUp
+        down() -> Action.MoveDown
+        else -> throw Exception("neighbor was not really a neighbor")
+    }
+
     fun up(): Point {
         return copy(y = y + 1)
     }
