@@ -38,4 +38,8 @@ data class Point(val x: Int, val y: Int) {
     fun right(): Point {
         return copy(x = x + 1)
     }
+
+    fun neighbors(): List<Point> {
+        return listOf(up(), down(), left(), right())
+    }
 }
