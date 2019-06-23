@@ -97,4 +97,36 @@ class DFSAnalyzerTest {
         }.last()
         println(result.second)
     }
+
+    @Test
+    fun `only one path to go`() {
+        val map6x4 = """
+            XXXwX.
+            XXXwX.
+            ww@wX.
+            XXX...
+        """.toProblem()
+        val startState = GameState(map6x4)
+        val analyzer = DFSAnalyzer.analyze(startState)
+        val startingWalkState: Pair<GameState, List<Action>> = startState to listOf()
+        val result: Pair<GameState, List<Action>> = generateSequence(startingWalkState) { (state, actions) ->
+            if (state.isGameComplete()) null
+            else {
+                val action = analyzer.invoke(RobotId.first, state)
+                val newState = applyAction(state, RobotId.first, action)
+                newState to actions.plus(action)
+            }
+        }.last()
+        println(result.second)
+        val expectedActions: List<Action> = listOf(
+            Action.MoveRight,
+            Action.MoveDown,
+            Action.MoveRight,
+            Action.MoveRight,
+            Action.MoveUp,
+            Action.MoveUp,
+            Action.MoveUp
+        )
+        Assertions.assertEquals(expectedActions, result.second)
+    }
 }
