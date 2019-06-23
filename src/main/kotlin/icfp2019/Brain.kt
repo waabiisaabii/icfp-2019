@@ -18,9 +18,12 @@ fun strategySequence(
     return generateSequence(
         seed = initialGameState to initialAction,
         nextFunction = { (gameState, _) ->
-            val nextAction = strategy.compute(gameState)(robotId, gameState)
-            val nextState = applyAction(gameState, robotId, nextAction)
-            nextState to nextAction
+            if (gameState.isGameComplete()) null
+            else {
+                val nextAction = strategy.compute(gameState)(robotId, gameState)
+                val nextState = applyAction(gameState, robotId, nextAction)
+                nextState to nextAction
+            }
         }
     ).drop(1) // skip the initial state
 }
@@ -54,7 +57,8 @@ fun Sequence<Pair<GameState, Action>>.score(
         initial.first,
         initial.second,
         conservativeDistance.estimate,
-        strategy)
+        strategy
+    )
 }
 
 fun brainStep(
