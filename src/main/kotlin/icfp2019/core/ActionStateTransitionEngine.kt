@@ -49,6 +49,7 @@ private fun adjustRobotState(
         Action.MoveDown -> robotState.copy(currentPosition = robotState.currentPosition.down())
         Action.MoveLeft -> robotState.copy(currentPosition = robotState.currentPosition.left())
         Action.MoveRight -> robotState.copy(currentPosition = robotState.currentPosition.right())
+        Action.DoNothing -> robotState
         else -> throw UnsupportedOperationException("Unhandled Action")
     }
 }
