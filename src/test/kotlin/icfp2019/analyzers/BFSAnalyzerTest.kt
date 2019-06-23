@@ -14,6 +14,7 @@ class BFSAnalyzerTest {
             X.X.XX
             X@....
         """.toProblem()
+
         val startState = GameState(map3x2)
         val analyzer = BFSAnalyzer.analyze(startState)
         println(analyzer)
