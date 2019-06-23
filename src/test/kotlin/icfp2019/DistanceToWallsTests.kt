@@ -1,10 +1,13 @@
 package icfp2019
 
+import icfp2019.analyzers.DistanceToWalls
+import icfp2019.model.*
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class DistanceAlgorithmTests {
+class DistanceToWallsTests {
     @Test
-    fun testDistance() {
+    fun testSimple() {
         val problem3Input =
             "(15,23),(16,23),(16,17),(15,17),(15,20),(12,20),(12,19),(10,19),(10,16),(12,16),(12,17),(13,17)," +
                     "(13,14),(14,14),(14,8),(16,8),(16,15),(18,15),(18,0),(27,0),(27,15),(22,15),(22,23),(19,23)," +
@@ -16,20 +19,13 @@ class DistanceAlgorithmTests {
                     "(21,14),(21,13),(20,13)#X(16,25);L(19,19);F(4,30);F(17,21);B(4,31)"
 
         val p = parseDesc(problem3Input)
-        val ret = applyDistanceAlgorithm(p.map)
-        printBoard(ret)
-    }
-
-    private fun printBoard(map: List<List<Int>>) {
-        println("${map.size} ${map[0].size}")
-        val maxX = map.size
-        val maxY = map[0].size
-        for (y in (maxY - 1) downTo 0) {
-            for (x in 0 until maxX) {
-                print("%02d".format(map[x][y]))
-                print(' ')
-            }
-            println()
-        }
+        val g = GameBoard(p.map, p.size.x, p.size.y)
+        val analyzer = DistanceToWalls().analyze(g)
+        val r1 = analyzer(GameState(listOf(RobotState(RobotId(0), Point(20, 0))), listOf(), listOf()))
+        Assertions.assertEquals(1, r1.size)
+        Assertions.assertEquals(8, r1[0])
+        val r2 = analyzer(GameState(listOf(RobotState(RobotId(0), Point(22, 0))), listOf(), listOf()))
+        Assertions.assertEquals(1, r2.size)
+        Assertions.assertEquals(6, r2[0])
     }
 }
