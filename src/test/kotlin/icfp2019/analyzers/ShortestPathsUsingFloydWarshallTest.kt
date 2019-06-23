@@ -1,7 +1,7 @@
 package icfp2019.analyzers
 
 import icfp2019.model.GameBoard
-import icfp2019.model.GameState
+import icfp2019.model.GameState.Companion.gameStateOf
 import icfp2019.model.Node
 import icfp2019.model.Point
 import org.junit.jupiter.api.Assertions
@@ -41,7 +41,7 @@ class ShortestPathsUsingFloydWarshallTest {
         )
 
         val graph = ShortestPathUsingFlyodWarshall
-            .analyze(gameBoard)(GameState.empty(Point(0, 0)))
+            .analyze(gameBoard)(gameStateOf(Point(0, 0)))
             .getPath(
                 Node(Point(0, 0), false),
                 Node(Point(2, 1), false)

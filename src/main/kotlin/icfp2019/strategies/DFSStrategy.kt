@@ -26,12 +26,13 @@ object DFSStrategy : Strategy {
                         when (!currentNode.isWrapped) {
                             true -> MoveListAnalyzer.analyze(map)
                                 .invoke(gameState)
-                                .invoke(gameState.robotState.robotId)
+                                .invoke(gameState.robotStateList.get(0).robotId)
                             false -> listOf()
                         }
                     traversalList.add(pickMove(moves))
                 }
             }
+
             traversalList
         }
     }

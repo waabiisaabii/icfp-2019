@@ -3,7 +3,7 @@ package icfp2019.analyzers
 import icfp2019.*
 import icfp2019.model.DrillState
 import icfp2019.model.GameBoard
-import icfp2019.model.GameState
+import icfp2019.model.GameState.Companion.gameStateOf
 import icfp2019.model.Point
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -23,7 +23,7 @@ class CalculateDrillCostTest {
                     "(21,14),(21,13),(20,13)#X(16,25);L(19,19);F(4,30);F(17,21);B(4,31)"
         val p = parseDesc(problem3Input)
         val gameBoard = GameBoard(p.map, p.size.x, p.size.y)
-        val drillCost = CalculateDrillCost.analyze(gameBoard)(GameState.empty(Point(0, 0)))
+        val drillCost = CalculateDrillCost.analyze(gameBoard)(gameStateOf(Point(0, 0)))
         val expected = listOf(
             arrayOf(
                 DrillState(Direction.R, 18),

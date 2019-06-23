@@ -38,7 +38,7 @@ class ShortestPathUsingDijkstraTest {
         )
 
         val graph = ShortestPathUsingDijkstra
-            .analyze(gameBoard)(GameState.empty(Point(0, 0)))
+            .analyze(gameBoard)(GameState.gameStateOf(Point(0, 0)))
             .getPath(
                 Node(Point(0, 0), false),
                 Node(Point(2, 1), false)

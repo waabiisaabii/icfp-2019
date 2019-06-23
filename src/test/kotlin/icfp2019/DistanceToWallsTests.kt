@@ -22,12 +22,12 @@ class DistanceToWallsTests {
         val g = GameBoard(p.map, p.size.x, p.size.y)
         val analyzer = DistanceToWalls().analyze(g)
         val firstRobotState = RobotState(RobotId(0), Point(20, 0))
-        val r1 = analyzer(GameState(firstRobotState, listOf(firstRobotState), listOf(), listOf()))
+        val r1 = analyzer(GameState(listOf(firstRobotState), listOf(), listOf()))
         Assertions.assertEquals(1, r1.size)
         Assertions.assertEquals(8, r1[0])
 
         val secondRobotState = RobotState(RobotId(0), Point(22, 0))
-        val r2 = analyzer(GameState(secondRobotState, listOf(secondRobotState), listOf(), listOf()))
+        val r2 = analyzer(GameState(listOf(secondRobotState), listOf(), listOf()))
         Assertions.assertEquals(1, r2.size)
         Assertions.assertEquals(6, r2[0])
     }
