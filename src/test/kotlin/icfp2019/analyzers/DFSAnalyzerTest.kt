@@ -1,8 +1,6 @@
 package icfp2019.analyzers
 
-import icfp2019.model.Action
-import icfp2019.model.GameBoard
-import icfp2019.model.GameState
+import icfp2019.model.*
 import icfp2019.toProblem
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -19,13 +17,11 @@ class DFSAnalyzerTest {
                             XXXXXXXX
                         """.toProblem()
 
-        val gameBoard = GameBoard(problem)
-        val startingState = GameState
-            .gameStateOf(problem)
+        val startingState = GameState.gameStateOf(problem)
 
         val actions = DFSAnalyzer
-            .analyze(gameBoard)
-            .invoke(startingState)
+            .analyze(startingState)
+            .invoke(RobotId.first, startingState)
 
         Assertions.assertEquals(
             Action.MoveRight,
@@ -44,13 +40,11 @@ class DFSAnalyzerTest {
                             XXXXXXXX
                         """.toProblem()
 
-        val gameBoard = GameBoard(problem)
-        val startingState = GameState
-            .gameStateOf(problem)
+        val startingState = GameState.gameStateOf(problem)
 
         val actions = DFSAnalyzer
-            .analyze(gameBoard)
-            .invoke(startingState)
+            .analyze(startingState)
+            .invoke(RobotId.first, startingState)
 
         Assertions.assertEquals(
             Action.MoveRight,
@@ -69,13 +63,11 @@ class DFSAnalyzerTest {
                             XXXXXXXX
                         """.toProblem()
 
-        val gameBoard = GameBoard(problem)
-        val startingState = GameState
-            .gameStateOf(problem)
+        val startingState = GameState.gameStateOf(problem)
 
         val actions = DFSAnalyzer
-            .analyze(gameBoard)
-            .invoke(startingState)
+            .analyze(startingState)
+            .invoke(RobotId.first, startingState)
 
         Assertions.assertEquals(
             Action.MoveDown,

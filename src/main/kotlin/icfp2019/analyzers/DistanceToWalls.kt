@@ -1,6 +1,6 @@
 package icfp2019.analyzers
 
-import icfp2019.core.Analyzer2
+import icfp2019.core.Analyzer
 import icfp2019.model.GameState
 import icfp2019.model.Node
 import icfp2019.model.RobotId
@@ -12,7 +12,7 @@ data class Distance(val value: Int) : Comparable<Distance> {
     }
 }
 
-class DistanceToWalls : Analyzer2<Distance> {
+class DistanceToWalls : Analyzer<Distance> {
 
     // Given a map, return a map of weights where the weight indicates the distance
     // the square is from the walls. We will sum the distance to close horizontal and vertical walls.

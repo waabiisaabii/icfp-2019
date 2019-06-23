@@ -2,11 +2,11 @@ package icfp2019
 
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
-import icfp2019.model.GameBoard
+import icfp2019.model.GameState
 
 class Cache<T, R>(filler: (T) -> R) {
     companion object {
-        fun <R> forGameBoard(filler: (GameBoard) -> R): Cache<GameBoard, R> {
+        fun <R> forGameState(filler: (GameState) -> R): Cache<GameState, R> {
             return Cache(filler)
         }
     }

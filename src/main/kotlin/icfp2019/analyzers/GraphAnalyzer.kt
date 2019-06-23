@@ -1,18 +1,18 @@
 package icfp2019.analyzers
 
-import icfp2019.model.GameBoard
 import icfp2019.model.GameState
 import icfp2019.model.Node
 import icfp2019.core.Analyzer
+import icfp2019.model.RobotId
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.SimpleGraph
 
 object GraphAnalyzer : Analyzer<Graph<Node, DefaultEdge>> {
-    override fun analyze(map: GameBoard): (state: GameState) -> Graph<Node, DefaultEdge> {
+    override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> Graph<Node, DefaultEdge> {
 
         val simpleGraph = SimpleGraph<Node, DefaultEdge>(DefaultEdge::class.java)
-        val allCells = map.cells.flatten().filter { !it.isObstacle }
+        val allCells = initialState.cells.flatten().filter { !it.isObstacle }
 
         allCells.forEach {
             simpleGraph.addVertex(it)
@@ -26,6 +26,6 @@ object GraphAnalyzer : Analyzer<Graph<Node, DefaultEdge>> {
             }
         }
 
-        return { simpleGraph }
+        return { _, _ -> simpleGraph }
     }
 }

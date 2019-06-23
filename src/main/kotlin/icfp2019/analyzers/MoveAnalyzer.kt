@@ -4,23 +4,23 @@ import icfp2019.core.Analyzer
 import icfp2019.model.*
 
 object MoveAnalyzer : Analyzer<(RobotId, Action) -> Boolean> {
-    override fun analyze(map: GameBoard): (state: GameState) -> (RobotId, Action) -> Boolean {
-        return { gameState ->
+    override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> (RobotId, Action) -> Boolean {
+        return { _, gameState ->
             { robotId, action ->
                 var possible = false
 
                 val robotState = gameState.robotState[robotId]
                 if (robotState != null &&
-                    map.isInBoard(robotState.currentPosition)
+                    initialState.isInBoard(robotState.currentPosition)
                 ) {
-                    val cell = map.get(robotState.currentPosition)
+                    val cell = initialState.get(robotState.currentPosition)
 
                     fun hasBooster(booster: Booster): Boolean {
                         return gameState.unusedBoosters.contains(booster)
                     }
 
                     fun canMoveTo(point: Point): Boolean {
-                        return map.isInBoard(point) &&
+                        return initialState.isInBoard(point) &&
                                 (!cell.isObstacle || hasBooster(Booster.Drill))
                     }
 
@@ -42,7 +42,7 @@ object MoveAnalyzer : Analyzer<(RobotId, Action) -> Boolean> {
                         Action.PlantTeleportResetPoint -> hasBooster(Booster.Teleporter)
                         is Action.TeleportBack -> canTeleportTo(action.targetResetPoint)
                         Action.CloneRobot -> hasBooster(Booster.CloneToken) &&
-                                map.get(robotState.currentPosition).hasBooster(Booster.CloningLocation)
+                                initialState.get(robotState.currentPosition).hasBooster(Booster.CloningLocation)
                         Action.Initialize -> false
                     }
                 }

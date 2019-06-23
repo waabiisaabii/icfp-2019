@@ -1,12 +1,8 @@
 package icfp2019.core
 
-import icfp2019.model.GameBoard
 import icfp2019.model.GameState
+import icfp2019.model.RobotId
 
 interface Strategy {
-    fun compute(map: GameBoard): (state: GameState) -> Proposal
-}
-
-interface Strategy2 {
-    fun compute(initialState: GameState): (state: GameState) -> Proposal
+    fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Proposal
 }

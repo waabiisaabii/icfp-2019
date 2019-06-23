@@ -1,8 +1,8 @@
 package icfp2019.analyzers
 
-import icfp2019.model.GameBoard
 import icfp2019.model.GameState
 import icfp2019.model.Point
+import icfp2019.model.RobotId
 import icfp2019.parseTestMap
 import icfp2019.printBoard
 import org.junit.jupiter.api.Test
@@ -14,10 +14,10 @@ internal class ConservativeDistanceAnalyzerTests {
         val problem = parseTestMap(map)
         printBoard(problem)
         val analyzer = ConservativeDistanceAnalyzer.analyze(
-            GameBoard(
+            GameState.gameStateOf(
                 problem
             )
-        ).invoke(GameState.gameStateOf(Point.origin()))
+        ).invoke(RobotId(0), GameState.gameStateOf(Point.origin()))
         val result = analyzer(problem.startingPosition)
         println(result.estimate)
         printBoard(problem, result.pathNodes)

@@ -3,18 +3,18 @@ package icfp2019.analyzers
 import icfp2019.Direction
 import icfp2019.core.Analyzer
 import icfp2019.model.DrillState
-import icfp2019.model.GameBoard
 import icfp2019.model.GameState
 import icfp2019.model.Node
+import icfp2019.model.RobotId
 import org.pcollections.PVector
 
 object CalculateDrillCost : Analyzer<List<Array<DrillState>>> {
-    override fun analyze(map: GameBoard): (state: GameState) -> List<Array<DrillState>> {
+    override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> List<Array<DrillState>> {
 
-        val currentGrid = buildDrillRequiredFromEachNode(map.cells)
-        return { gameState ->
-            gameState.robotState.values.map { state ->
-                currentGrid[state.currentPosition.x][state.currentPosition.y]
+        val currentGrid = buildDrillRequiredFromEachNode(initialState.cells)
+        return { _, state ->
+            state.robotState.values.map { currentState ->
+                currentGrid[currentState.currentPosition.x][currentState.currentPosition.y]
             }
         }
     }

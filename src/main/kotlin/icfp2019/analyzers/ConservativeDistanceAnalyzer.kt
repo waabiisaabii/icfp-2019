@@ -2,28 +2,28 @@ package icfp2019.analyzers
 
 import icfp2019.core.Analyzer
 import icfp2019.core.DistanceEstimate
-import icfp2019.model.GameBoard
 import icfp2019.model.GameState
 import icfp2019.model.Node
 import icfp2019.model.Point
+import icfp2019.model.RobotId
 import org.jgrapht.alg.connectivity.ConnectivityInspector
 import org.jgrapht.alg.spanning.PrimMinimumSpanningTree
 import org.jgrapht.graph.AsSubgraph
 
 data class ConservativeDistance(val estimate: DistanceEstimate, val pathNodes: Set<Node>)
 object ConservativeDistanceAnalyzer : Analyzer<(position: Point) -> ConservativeDistance> {
-    override fun analyze(map: GameBoard): (state: GameState) -> (position: Point) -> ConservativeDistance {
-        val graphAnalyzer = GraphAnalyzer.analyze(map)
-        val shortestPathAnalyzer = ShortestPathUsingDijkstra.analyze(map)
-        return { state ->
-            val graph = graphAnalyzer(state)
-            val shortestPathAlgorithm = shortestPathAnalyzer(state)
+    override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> (position: Point) -> ConservativeDistance {
+        val graphAnalyzer = GraphAnalyzer.analyze(initialState)
+        val shortestPathAnalyzer = ShortestPathUsingDijkstra.analyze(initialState)
+        return { id, state ->
+            val graph = graphAnalyzer(id, state)
+            val shortestPathAlgorithm = shortestPathAnalyzer(id, state)
             val unwrappedNodes = AsSubgraph(graph, graph.vertexSet().filter { it.isWrapped.not() }.toSet())
             val connectivityInspector = ConnectivityInspector(unwrappedNodes)
             val connectedGraphs = connectivityInspector.connectedSets();
 
             { point ->
-                val node = map.get(point)
+                val node = initialState.get(point)
                 val randomNodesFromEach: Set<Node> =
                     connectedGraphs.map { it.first() }
                         .plus(node)

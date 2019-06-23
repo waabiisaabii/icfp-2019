@@ -5,15 +5,15 @@ import icfp2019.model.GameState
 import icfp2019.model.Node
 import icfp2019.model.RobotId
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath
+import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths
 import org.jgrapht.graph.DefaultEdge
 
-object ShortestPathUsingDijkstra : Analyzer<ShortestPathAlgorithm<Node, DefaultEdge>> {
+object ShortestPathUsingFloydWarshall : Analyzer<ShortestPathAlgorithm<Node, DefaultEdge>> {
     override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> ShortestPathAlgorithm<Node, DefaultEdge> {
         val completeGraph = GraphAnalyzer.analyze(initialState)
-        return { robotId, graphState ->
-            val graph = completeGraph(robotId, graphState)
-            DijkstraShortestPath(graph)
+        return { id, graphState ->
+            val graph = completeGraph(id, graphState)
+            FloydWarshallShortestPaths(graph)
         }
     }
 }

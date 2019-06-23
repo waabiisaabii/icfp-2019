@@ -1,13 +1,14 @@
 package icfp2019.analyzers
 
 import icfp2019.model.GameState
-import icfp2019.core.Analyzer3
+import icfp2019.core.Analyzer
+import icfp2019.model.RobotId
 
 data class WrappedUnwrapped(val wrapped: Int, val unwrapped: Int)
 
-object GetNumberOfWrappedOrNot : Analyzer3<WrappedUnwrapped> {
-    override fun analyze(initialState: GameState): (state: GameState) -> WrappedUnwrapped {
-        return { state ->
+object GetNumberOfWrappedOrNot : Analyzer<WrappedUnwrapped> {
+    override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> WrappedUnwrapped {
+        return { _, state ->
             state.cells
                 .flatten()
                 .map {

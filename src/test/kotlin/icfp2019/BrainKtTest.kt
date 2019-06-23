@@ -11,8 +11,8 @@ import java.lang.IllegalStateException
 
 internal class BrainKtTest {
     object RightStrategy : Strategy {
-        override fun compute(map: GameBoard): (state: GameState) -> Proposal {
-            return { gameState ->
+        override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Proposal {
+            return { _, gameState ->
                 val position = gameState
                     .robotState
                     .getValue(RobotId.first)
@@ -31,8 +31,8 @@ internal class BrainKtTest {
     }
 
     object DownStrategy : Strategy {
-        override fun compute(map: GameBoard): (state: GameState) -> Proposal {
-            return { gameState ->
+        override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Proposal {
+            return { _, gameState ->
                 val position = gameState
                     .robotState
                     .getValue(RobotId.first)
@@ -55,11 +55,9 @@ internal class BrainKtTest {
         val problem = parseTestMap(init)
         val solution = parseTestMap(fini)
         printBoard(problem)
-        var board = GameBoard(problem)
         var state = GameState.gameStateOf(problem)
         for (i in 0..3) {
             val (result, actions) = brainStep(
-                board,
                 state,
                 listOf(RightStrategy, DownStrategy)
             )

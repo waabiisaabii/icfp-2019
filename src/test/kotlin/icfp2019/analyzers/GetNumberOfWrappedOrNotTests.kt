@@ -8,7 +8,7 @@ import org.pcollections.TreePVector
 class GetNumberOfWrappedOrNotTests {
     @Test
     fun testSimple() {
-        var g = GameState.gameStateOf(
+        val gameState = GameState.gameStateOf(
             TreePVector.from(
                 listOf(
                     TreePVector.from(
@@ -32,13 +32,13 @@ class GetNumberOfWrappedOrNotTests {
                 )
             ), MapSize(3, 2), Point(0, 0))
 
-        val columns = g.cells
+        val columns = gameState.cells
         Assertions.assertEquals(3, columns.size)
         Assertions.assertEquals(2, columns[0].size)
         Assertions.assertEquals(2, columns[1].size)
         Assertions.assertEquals(2, columns[2].size)
 
-        val results = GetNumberOfWrappedOrNot.analyze(g)(g)
+        val results = GetNumberOfWrappedOrNot.analyze(gameState)(RobotId(0), gameState)
         Assertions.assertEquals(2, results.wrapped)
         Assertions.assertEquals(4, results.unwrapped)
     }
