@@ -21,14 +21,9 @@ object BFSStrategy : Strategy {
             val currentNode = graph.vertexSet().filter { currentPoint == it.point }[0]
 
             val unwrappedGraph =
-                AsSubgraph(graph,
-                    graph.vertexSet()
-                        .filter { gameState.get(it.point).isWrapped.not() }
-                        .plus(currentNode)
-                        .toSet())
+                AsSubgraph(graph, graph.vertexSet().filter { gameState.get(it.point).isWrapped.not() }.plus(currentNode).toSet())
 
-            val bfsIterator: GraphIterator<Node, DefaultEdge> =
-                BreadthFirstIterator(unwrappedGraph, currentNode)
+            val bfsIterator: GraphIterator<Node, DefaultEdge> = BreadthFirstIterator(unwrappedGraph, currentNode)
 
             val neighbors = currentNode.point.neighbors()
                 .filter { gameState.isInBoard(it) }
