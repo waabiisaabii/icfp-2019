@@ -102,7 +102,7 @@ fun brain(
     strategies: Iterable<Strategy>,
     maximumSteps: Int
 ): Solution {
-    var gameState = GameState.gameStateOf(problem)
+    var gameState = GameState(problem)
     val actions = mutableMapOf<RobotId, List<Action>>()
     while (!gameState.isGameComplete()) {
         val (newState, newActions) = brainStep(gameState, strategies, maximumSteps)
@@ -113,5 +113,5 @@ fun brain(
         }
     }
 
-    return Solution(actions)
+    return Solution(actions.toMap())
 }

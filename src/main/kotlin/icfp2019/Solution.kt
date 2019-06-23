@@ -3,7 +3,7 @@ package icfp2019
 import icfp2019.model.Action
 import icfp2019.model.RobotId
 
-data class Solution(val actions: MutableMap<RobotId, List<Action>>) {
+data class Solution(val actions: Map<RobotId, List<Action>>) {
     override fun toString(): String {
         return actions.encodeActions()
     }
