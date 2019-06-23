@@ -50,4 +50,18 @@ class EatCloserThenFatherTests {
         val m1 = s(gs)
         Assertions.assertEquals(Action.MoveRight, m1.nextMove)
     }
+
+    @Test
+    fun test4() {
+        val problem = """
+        .w.XX
+        w@w..
+        .w.XX
+    """.toProblem()
+        val gs = GameState.gameStateOf(problem)
+        val s = EatCloserThenFarther().compute(gs)
+        val m1 = s(gs)
+        Assertions.assertEquals(Action.MoveRight, m1.nextMove)
+        Assertions.assertEquals(Int.MAX_VALUE, m1.estimatedDistance.distance)
+    }
 }

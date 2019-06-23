@@ -1,6 +1,7 @@
 package icfp2019.strategies
 
 import icfp2019.analyzers.DistanceToWalls
+import icfp2019.analyzers.GetNumberOfWrappedOrNot
 import icfp2019.core.DistanceEstimate
 import icfp2019.core.Proposal
 import icfp2019.model.GameState
@@ -17,41 +18,48 @@ class EatCloserThenFarther : Strategy2 {
 
             // val currentDistance = distanceToWallsAnalyzer(0, state)
             val initialRobot = RobotId(0)
-            val points = listOf(
-                    0 to (Action.MoveUp to state.robotState[initialRobot]!!.currentPosition.up()),
-                    1 to (Action.MoveRight to state.robotState[initialRobot]!!.currentPosition.right()),
-                    2 to (Action.MoveDown to state.robotState[initialRobot]!!.currentPosition.down()),
-                    3 to (Action.MoveLeft to state.robotState[initialRobot]!!.currentPosition.left()))
+            val allMoves = listOf(
+                    0 to (Action.MoveUp to state.robotState.getValue(initialRobot).currentPosition.up()),
+                    1 to (Action.MoveRight to state.robotState.getValue(initialRobot).currentPosition.right()),
+                    2 to (Action.MoveDown to state.robotState.getValue(initialRobot).currentPosition.down()),
+                    3 to (Action.MoveLeft to state.robotState.getValue(initialRobot).currentPosition.left()))
 
             // [Index, GameState]
-            val newStates = points
+            val movesWithinGameboard = allMoves
                 .filter { state.mapSize.pointInMap(it.second.second) }
                 .map { it.first to applyAction(state, initialRobot, it.second.first) }
             // [Index, distance]
-            val newValues = newStates
+            val movesAvoidingObstacles = movesWithinGameboard
                 .map { it.first to distanceToWallsAnalyzer(initialRobot, it.second) }
-                .filter { it.second != DistanceToWalls.obstacle }
+                .filter { it.second != DistanceToWalls.obstacleIdentifier }
 
             // Deal with wrapped vs unwrapped. If all wrapped, go for the largest.
             // Else, go for the smallest.
-            val allWrapped = newValues
+            val allWrapped = movesAvoidingObstacles
                 .map { it.first }
-                .filter { !state.get(points[it].second.second).isWrapped }
+                .filter { !state.get(allMoves[it].second.second).isWrapped }
                 .isEmpty()
 
+            val maxDistance = Int.MAX_VALUE
+            val wrappedUnwrapped = GetNumberOfWrappedOrNot.analyze(initialState)(state)
+            val distance = if (allWrapped) {
+                maxDistance
+            } else {
+                wrappedUnwrapped.unwrapped
+            }
             val result = if (allWrapped) {
-                newValues
+                movesAvoidingObstacles
                     .maxBy { it.second }
             } else {
-                newValues
-                    .filter { !state.get(points[it.first].second.second).isWrapped }
+                movesAvoidingObstacles
+                    .filter { !state.get(allMoves[it.first].second.second).isWrapped }
                     .minBy { it.second }
             }
 
             if (result != null) {
-                Proposal(DistanceEstimate(0), points[result.first].second.first)
+                Proposal(DistanceEstimate(distance), allMoves[result.first].second.first)
             } else {
-                Proposal(DistanceEstimate(0), Action.DoNothing)
+                Proposal(DistanceEstimate(maxDistance), Action.DoNothing)
             }
         }
     }
