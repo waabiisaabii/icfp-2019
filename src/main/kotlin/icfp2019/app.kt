@@ -17,14 +17,11 @@ fun main(args: Array<String>) {
 
 /*
 fun solve(problem: Problem): String {
-    /*
     val strategy = BackTrackingStrategy()
     val gameBoardOf = GameBoard.gameBoardOf(problem)
     val gameState = GameState(gameBoardOf, listOf(RobotState(RobotId(0), problem.startingPosition)), listOf(), listOf())
     val actions = strategy.getActions(gameState)
     return Output.encodeRobotActions(actions)
-     */
-    return ""
 }
  */
 
