@@ -1,12 +1,16 @@
 package icfp2019.strategies
 
 import icfp2019.analyzers.GraphAnalyzer
-import icfp2019.analyzers.MoveListAnalyzer
+import icfp2019.analyzers.ShortestPathUsingFlyodWarshall
 import icfp2019.core.DistanceEstimate
 import icfp2019.core.Proposal
 import icfp2019.core.Strategy
-import icfp2019.model.*
+import icfp2019.model.GameBoard
+import icfp2019.model.GameState
+import icfp2019.model.Node
 import org.jgrapht.Graph
+import org.jgrapht.GraphPath
+import org.jgrapht.graph.AsSubgraph
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.traverse.DepthFirstIterator
 import org.jgrapht.traverse.GraphIterator
@@ -15,38 +19,42 @@ import org.jgrapht.traverse.GraphIterator
 object DFSStrategy : Strategy {
     override fun compute(map: GameBoard): (state: GameState) -> Proposal {
         return { gameState ->
-            val undirectedGraph: Graph<Node, DefaultEdge> = GraphAnalyzer.analyze(map).invoke(gameState)
-            val it: GraphIterator<Node, DefaultEdge> = DepthFirstIterator(undirectedGraph)
-            val visitedMap = mutableMapOf<Node, Boolean>()
+            val graph: Graph<Node, DefaultEdge> = GraphAnalyzer.analyze(map).invoke(gameState)
 
-            val traversalList: MutableList<Action> = mutableListOf()
-            while (it.hasNext()) {
-                val currentNode: Node = it.next()
-                if (!visitedMap.containsKey(currentNode)) {
-                    // Consume the node if we haven't seen the node before
-                    val moves: List<Action> =
-                        when (!currentNode.isWrapped) {
-                            true -> MoveListAnalyzer.analyze(map)
-                                .invoke(gameState)
-                                .invoke(
-                                    (gameState.robotState[RobotId.first] ?: error("unable to find first robot")).robotId
-                                )
-                            false -> listOf()
-                        }
-                    traversalList.add(pickMove(moves))
-                }
+            val currentPoint = gameState.robotState.values.first().currentPosition
+            val currentNode = gameState.get(currentPoint)
+
+            val unwrappedGraph =
+                AsSubgraph(graph, graph.vertexSet().filter { it.isWrapped.not() }.plus(currentNode).toSet())
+
+            val it: GraphIterator<Node, DefaultEdge> = DepthFirstIterator(unwrappedGraph)
+
+            val neighbors = currentNode.point.neighbors().map { gameState.get(it) }
+            if (neighbors.any {
+                    it.isWrapped.not() && it.isObstacle.not()
+                }) {
+                val neighbor = it.next().point
+                Proposal(
+                    DistanceEstimate(0),
+                    currentPoint.actionToGetToNeighbor(neighbor)
+                )
+            } else {
+                val analyze = ShortestPathUsingFlyodWarshall.analyze(map)
+                val shortestPathAlgorithm = analyze(gameState)
+
+                val pathToClosestNode: GraphPath<Node, DefaultEdge> = unwrappedGraph.vertexSet()
+                    .filter { it.point != currentNode.point }
+                    .filter { it.isWrapped.not() }
+                    .map { shortestPathAlgorithm.getPath(currentNode, it) }
+                    .minBy { it.length }!!
+
+                // pathToClosestNode.vertexList[0] is `currentNode`
+                val nextNode = pathToClosestNode.vertexList[1]
+                Proposal(
+                    DistanceEstimate(0),
+                    currentPoint.actionToGetToNeighbor(nextNode.point)
+                )
             }
-            Proposal(DistanceEstimate(0), traversalList.first())
         }
-    }
-
-    // A "heuristic" for picking movements random shuffle and get the first
-    private fun pickMove(moves: List<Action>): Action {
-        return moves.filter {
-            it is Action.MoveDown ||
-                    it is Action.MoveUp ||
-                    it is Action.MoveLeft ||
-                    it is Action.MoveRight
-        }.shuffled().first()
     }
 }

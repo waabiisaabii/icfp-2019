@@ -1,46 +1,85 @@
 package icfp2019.analyzers
 
-import icfp2019.model.*
+import icfp2019.model.Action
+import icfp2019.model.GameBoard
+import icfp2019.model.GameState
+import icfp2019.toProblem
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.pcollections.TreePVector
 
 class DFSAnalyzerTest {
     @Test
-    fun testDfsAnalyzerTest() {
-        var gameBoard = GameBoard(
-            TreePVector.from(
-                listOf(
-                    TreePVector.from(
-                        listOf(
-                            Node(Point(0, 0), false),
-                            Node(Point(0, 1), false)
-                        )
-                    ),
-                    TreePVector.from(
-                        listOf(
-                            Node(Point(1, 0), false),
-                            Node(Point(1, 1), false)
-                        )
-                    ),
-                    TreePVector.from(
-                        listOf(
-                            Node(Point(2, 0), false),
-                            Node(Point(2, 1), false)
-                        )
-                    )
-                )
-            ), 3, 2
-        )
+    fun `get rid of being stuck`() {
+        val problem = """
+                            XXXXXXXX
+                            XXXXwX.X
+                            XXXXwX.X
+                            Xw@wwX.X
+                            XXXX...X
+                            XXXXXXXX
+                        """.toProblem()
 
-        val robotState = RobotState(RobotId.first, Point.origin(), Orientation.Up, 0)
-        val gameState = GameState(
-            gameBoard.cells,
-            MapSize(gameBoard.width, gameBoard.height),
-            mapOf(RobotId.first to robotState),
-            listOf(),
-            listOf())
-        val analyzer = DFSAnalyzer.analyze(gameBoard)
-        val listOfActions = analyzer.invoke(gameState)
-        println(listOfActions)
+        val gameBoard = GameBoard(problem)
+        val startingState = GameState
+            .gameStateOf(problem)
+
+        val actions = DFSAnalyzer
+            .analyze(gameBoard)
+            .invoke(startingState)
+
+        Assertions.assertEquals(
+            Action.MoveRight,
+            actions.first()
+        )
+    }
+
+    @Test
+    fun `get rid of being stuck 3`() {
+        val problem = """
+                            XXXXXXXX
+                            XXXXwX.X
+                            XXXXwX.X
+                            Xww@wX.X
+                            XXXX...X
+                            XXXXXXXX
+                        """.toProblem()
+
+        val gameBoard = GameBoard(problem)
+        val startingState = GameState
+            .gameStateOf(problem)
+
+        val actions = DFSAnalyzer
+            .analyze(gameBoard)
+            .invoke(startingState)
+
+        Assertions.assertEquals(
+            Action.MoveRight,
+            actions.first()
+        )
+    }
+
+    @Test
+    fun `verify dfs movement`() {
+        val problem = """
+                            XXXXXXXX
+                            XXXXwX.X
+                            XXXXwX.X
+                            Xwww@X.X
+                            XXXX...X
+                            XXXXXXXX
+                        """.toProblem()
+
+        val gameBoard = GameBoard(problem)
+        val startingState = GameState
+            .gameStateOf(problem)
+
+        val actions = DFSAnalyzer
+            .analyze(gameBoard)
+            .invoke(startingState)
+
+        Assertions.assertEquals(
+            Action.MoveDown,
+            actions.first()
+        )
     }
 }
