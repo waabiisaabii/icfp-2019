@@ -1,6 +1,7 @@
 package icfp2019.analyzers
 
 import icfp2019.core.Analyzer
+import icfp2019.model.Booster
 import icfp2019.model.GameState
 import icfp2019.model.Node
 import icfp2019.model.RobotId
@@ -8,8 +9,8 @@ import org.jgrapht.GraphPath
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath
 import org.jgrapht.graph.DefaultEdge
 
-object FindPathsToBoostersAnalyzer : Analyzer<List<GraphPath<Node, DefaultEdge>>> {
-    override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> List<GraphPath<Node, DefaultEdge>> {
+object FindPathsToBoostersAnalyzer : Analyzer<(requestedBooster: Booster) -> List<GraphPath<Node, DefaultEdge>>> {
+    override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> ((requestedBooster: Booster) -> List<GraphPath<Node, DefaultEdge>>) {
         // First find the boosters and compute the paths
         val boosters = initialState.cells.flatten().filter { it.isBooster() }
         val completeGraph = GraphAnalyzer.analyze(initialState)
@@ -17,11 +18,13 @@ object FindPathsToBoostersAnalyzer : Analyzer<List<GraphPath<Node, DefaultEdge>>
         val graph = completeGraph(RobotId(0), initialState)
         val algorithm = DijkstraShortestPath(graph)
         return { robotId, state ->
-            // Filter used boosters
-            val robotNode = state.get(state.robot(robotId).currentPosition)
-            boosters
-                .filter { it.isBooster() }
-                .map { algorithm.getPath(robotNode, it) }
+            { booster ->
+                // Filter used boosters
+                val robotNode = initialState.get(state.robot(robotId).currentPosition)
+                boosters
+                    .filter { it.hasBooster(booster) }
+                    .map { algorithm.getPath(robotNode, it) }
+            }
         }
     }
 }

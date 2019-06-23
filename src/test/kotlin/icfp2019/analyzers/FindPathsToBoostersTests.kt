@@ -1,5 +1,6 @@
 package icfp2019.analyzers
 
+import icfp2019.model.Booster
 import icfp2019.model.GameState
 import icfp2019.model.RobotId
 import icfp2019.toProblem
@@ -17,7 +18,7 @@ class FindPathsToBoostersTests {
 
         val gs = GameState(problem)
         val analyzer = FindPathsToBoostersAnalyzer.analyze(gs)
-        val r = analyzer(RobotId.first, gs)
+        val r = analyzer(RobotId.first, gs)(Booster.ExtraArm)
         Assertions.assertEquals(4, r[0].length)
     }
 
@@ -31,7 +32,7 @@ class FindPathsToBoostersTests {
 
         val gs = GameState(problem)
         val analyzer = FindPathsToBoostersAnalyzer.analyze(gs)
-        val r = analyzer(RobotId.first, gs)
+        val r = analyzer(RobotId.first, gs)(Booster.ExtraArm)
         Assertions.assertEquals(2, r[0].length)
     }
 }
