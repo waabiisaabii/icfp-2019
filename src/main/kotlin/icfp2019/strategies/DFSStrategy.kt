@@ -38,7 +38,7 @@ object DFSStrategy : Strategy {
                 val neighbor = it.next().point
                 currentPoint.actionToGetToNeighbor(neighbor)
             } else {
-                val analyze = ShortestPathUsingFloydWarshall.analyze(initialState)
+                val analyze = ShortestPathUsingFloydWarshall.analyze(gameState)
                 val shortestPathAlgorithm = analyze(robotId, gameState)
 
                 val pathToClosestNode: GraphPath<Node, DefaultEdge> = unwrappedGraph.vertexSet()
