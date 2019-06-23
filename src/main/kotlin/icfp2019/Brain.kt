@@ -18,7 +18,7 @@ fun strategySequence(
     return generateSequence(
         seed = initialGameState to initialAction,
         nextFunction = { (gameState, _) ->
-            val nextAction = strategy.compute(gameState)(robotId, gameState).nextMove
+            val nextAction = strategy.compute(gameState)(robotId, gameState)
             val nextState = applyAction(gameState, robotId, nextAction)
             nextState to nextAction
         }

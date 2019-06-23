@@ -1,9 +1,6 @@
 package icfp2019.strategies
 
 import icfp2019.analyzers.DistanceToWalls
-import icfp2019.analyzers.GetNumberOfWrappedOrNot
-import icfp2019.core.DistanceEstimate
-import icfp2019.core.Proposal
 import icfp2019.core.Strategy
 import icfp2019.core.applyAction
 import icfp2019.model.Action
@@ -11,7 +8,7 @@ import icfp2019.model.GameState
 import icfp2019.model.RobotId
 
 class EatCloserThenFarther : Strategy {
-    override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Proposal {
+    override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Action {
         val distanceToWallsAnalyzer = DistanceToWalls().analyze(initialState)
         return { robotId, state ->
             // val currentDistance = distanceToWallsAnalyzer(0, state)
@@ -37,13 +34,6 @@ class EatCloserThenFarther : Strategy {
                 .map { it.first }
                 .none { !state.get(allMoves[it].second.second).isWrapped }
 
-            val maxDistance = Int.MAX_VALUE
-            val wrappedUnwrapped = GetNumberOfWrappedOrNot.analyze(initialState)(robotId, state)
-            val distance = if (allWrapped) {
-                maxDistance
-            } else {
-                wrappedUnwrapped.unwrapped
-            }
             val result = if (allWrapped) {
                 movesAvoidingObstacles.maxBy { it.second }
             } else {
@@ -53,9 +43,9 @@ class EatCloserThenFarther : Strategy {
             }
 
             if (result != null) {
-                Proposal(DistanceEstimate(distance), allMoves[result.first].second.first)
+                allMoves[result.first].second.first
             } else {
-                Proposal(DistanceEstimate(maxDistance), Action.DoNothing)
+                Action.DoNothing
             }
         }
     }

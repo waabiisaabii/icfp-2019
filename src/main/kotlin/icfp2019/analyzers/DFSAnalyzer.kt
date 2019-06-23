@@ -8,6 +8,6 @@ import icfp2019.strategies.DFSStrategy
 
 object DFSAnalyzer : Analyzer<Iterable<Action>> {
     override fun analyze(initialState: GameState): (robotId: RobotId, state: GameState) -> Iterable<Action> {
-        return { robotId, state -> listOf(DFSStrategy.compute(initialState).invoke(robotId, state).nextMove) }
+        return { robotId, state -> listOf(DFSStrategy.compute(initialState).invoke(robotId, state)) }
     }
 }

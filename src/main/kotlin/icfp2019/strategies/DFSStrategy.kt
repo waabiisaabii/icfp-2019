@@ -2,8 +2,6 @@ package icfp2019.strategies
 
 import icfp2019.analyzers.GraphAnalyzer
 import icfp2019.analyzers.ShortestPathUsingFloydWarshall
-import icfp2019.core.DistanceEstimate
-import icfp2019.core.Proposal
 import icfp2019.core.Strategy
 import icfp2019.model.*
 import org.jgrapht.Graph
@@ -15,7 +13,7 @@ import org.jgrapht.traverse.GraphIterator
 
 // Move to an open space and push moves onto a stack, if no moves available then backtrack using the stack
 object DFSStrategy : Strategy {
-    override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Proposal {
+    override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Action {
         return { robotId, gameState ->
             val graph: Graph<Node, DefaultEdge> = GraphAnalyzer.analyze(initialState).invoke(robotId, gameState)
 
@@ -32,10 +30,7 @@ object DFSStrategy : Strategy {
                     it.isWrapped.not() && it.isObstacle.not()
                 }) {
                 val neighbor = it.next().point
-                Proposal(
-                    DistanceEstimate(0),
-                    currentPoint.actionToGetToNeighbor(neighbor)
-                )
+                currentPoint.actionToGetToNeighbor(neighbor)
             } else {
                 val analyze = ShortestPathUsingFloydWarshall.analyze(initialState)
                 val shortestPathAlgorithm = analyze(robotId, gameState)
@@ -48,10 +43,7 @@ object DFSStrategy : Strategy {
 
                 // pathToClosestNode.vertexList[0] is `currentNode`
                 val nextNode = pathToClosestNode.vertexList[1]
-                Proposal(
-                    DistanceEstimate(0),
-                    currentPoint.actionToGetToNeighbor(nextNode.point)
-                )
+                currentPoint.actionToGetToNeighbor(nextNode.point)
             }
         }
     }

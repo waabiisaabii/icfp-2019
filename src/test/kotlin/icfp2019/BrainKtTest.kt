@@ -1,7 +1,5 @@
 package icfp2019
 
-import icfp2019.core.DistanceEstimate
-import icfp2019.core.Proposal
 import icfp2019.core.Strategy
 import icfp2019.model.*
 import org.junit.jupiter.api.Assertions
@@ -14,12 +12,12 @@ internal class BrainKtTest {
     class TestStrategy(vararg actions: Action) : Strategy {
         private val queue = ArrayDeque(actions.toList())
 
-        override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Proposal {
+        override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Action {
             return { _, _ ->
                 if (queue.isEmpty()) {
-                    Proposal(DistanceEstimate(0), Action.DoNothing)
+                    Action.DoNothing
                 } else {
-                    Proposal(DistanceEstimate(0), queue.pop())
+                    queue.pop()
                 }
             }
         }
