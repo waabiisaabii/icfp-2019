@@ -1,5 +1,6 @@
-package icfp2019
+package icfp2019.model
 
+import icfp2019.parseDesc
 import org.junit.jupiter.api.Test
 
 class DrillTests {

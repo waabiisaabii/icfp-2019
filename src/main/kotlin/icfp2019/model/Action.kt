@@ -1,4 +1,4 @@
-package icfp2019
+package icfp2019.model
 
 sealed class Action {
     fun toSolutionString(): String = when (this) {

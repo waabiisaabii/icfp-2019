@@ -1,4 +1,4 @@
-package icfp2019
+package icfp2019.model
 
 data class Node(
     val point: Point,

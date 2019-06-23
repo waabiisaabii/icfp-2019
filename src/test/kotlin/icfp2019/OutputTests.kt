@@ -1,5 +1,8 @@
 package icfp2019
 
+import icfp2019.model.Action
+import icfp2019.model.Point
+import icfp2019.model.RobotId
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

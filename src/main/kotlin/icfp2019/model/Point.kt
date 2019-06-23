@@ -1,4 +1,4 @@
-package icfp2019
+package icfp2019.model
 
 data class Point(val x: Int, val y: Int) {
     fun isNeighbor(otherPoint: Point): Boolean = when (otherPoint) {

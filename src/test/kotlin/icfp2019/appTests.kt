@@ -1,5 +1,9 @@
 package icfp2019
 
+import icfp2019.model.MapSize
+import icfp2019.model.Node
+import icfp2019.model.Point
+import icfp2019.model.Problem
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.pcollections.PVector

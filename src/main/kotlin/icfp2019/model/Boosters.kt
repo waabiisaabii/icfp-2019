@@ -1,4 +1,4 @@
-package icfp2019
+package icfp2019.model
 
 sealed class Booster {
     companion object {

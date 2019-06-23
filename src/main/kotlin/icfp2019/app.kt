@@ -1,5 +1,6 @@
 package icfp2019
 
+import icfp2019.model.Problem
 import java.nio.file.Paths
 
 fun main(args: Array<String>) {

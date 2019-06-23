@@ -1,7 +1,7 @@
 package icfp2019.analyzers
 
-import icfp2019.*
 import icfp2019.core.Analyzer
+import icfp2019.model.*
 
 object MoveListAnalyzer : Analyzer<(RobotId) -> List<Action>> {
     override fun analyze(map: GameBoard): (state: GameState) -> (RobotId) -> List<Action> {

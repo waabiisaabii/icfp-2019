@@ -1,5 +1,8 @@
 package icfp2019
 
+import icfp2019.model.Booster
+import icfp2019.model.Node
+import icfp2019.model.Point
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

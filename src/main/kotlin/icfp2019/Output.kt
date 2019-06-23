@@ -1,5 +1,8 @@
 package icfp2019
 
+import icfp2019.model.Action
+import icfp2019.model.RobotId
+
 /*  
 A solution for a task
   prob-NNN.desc

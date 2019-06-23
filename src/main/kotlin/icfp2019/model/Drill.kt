@@ -1,4 +1,6 @@
-package icfp2019
+package icfp2019.model
+
+import icfp2019.Direction
 
 fun buildDrillRequiredFromEachNode(problem: Problem): Array<Array<Array<DrillState>>> {
 
@@ -34,7 +36,8 @@ fun buildDrillRequiredFromEachNode(problem: Problem): Array<Array<Array<DrillSta
                     .takeWhile { it.isObstacle }
                     .count()
 
-                arrayOf(DrillState(Direction.R, rightDir),
+                arrayOf(
+                    DrillState(Direction.R, rightDir),
                     DrillState(Direction.L, leftDir),
                     DrillState(Direction.U, upDir),
                     DrillState(Direction.D, downDir)

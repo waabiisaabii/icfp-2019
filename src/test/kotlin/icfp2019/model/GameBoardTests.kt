@@ -1,25 +1,24 @@
-package icfp2019
+package icfp2019.model
 
-import icfp2019.analyzers.GetNumberOfWrappedOrNot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.pcollections.TreePVector
 
-class GetNumberOfWrappedOrNotTests {
+class GameBoardTests {
     @Test
-    fun testSimple() {
+    fun testGameBoardRowsSequence() {
         var g = GameBoard(
             TreePVector.from(
                 listOf(
                     TreePVector.from(
                         listOf(
-                            Node(Point(0, 0), false, true),
+                            Node(Point(0, 0), false),
                             Node(Point(0, 1), false)
                         )
                     ),
                     TreePVector.from(
                         listOf(
-                            Node(Point(1, 0), false, true),
+                            Node(Point(1, 0), false),
                             Node(Point(1, 1), false)
                         )
                     ),
@@ -32,15 +31,25 @@ class GetNumberOfWrappedOrNotTests {
                 )
             ), 3, 2
         )
-
         val columns = g.cells
         Assertions.assertEquals(3, columns.size)
         Assertions.assertEquals(2, columns[0].size)
         Assertions.assertEquals(2, columns[1].size)
         Assertions.assertEquals(2, columns[2].size)
-
-        val results = GetNumberOfWrappedOrNot.analyze(g)(GameState.empty(Point(0, 0)))
-        Assertions.assertEquals(2, results.wrapped)
-        Assertions.assertEquals(4, results.unwrapped)
+        Assertions.assertEquals(g.get(Point(0, 0)),
+            Node(Point(0, 0), false)
+        )
+        Assertions.assertEquals(g.get(Point(1, 0)),
+            Node(Point(1, 0), false)
+        )
+        Assertions.assertEquals(g.get(Point(2, 0)),
+            Node(Point(2, 0), false)
+        )
+        Assertions.assertEquals(Node(Point(0, 0), false), columns[0][0])
+        Assertions.assertEquals(Node(Point(0, 1), false), columns[0][1])
+        Assertions.assertEquals(Node(Point(1, 0), false), columns[1][0])
+        Assertions.assertEquals(Node(Point(1, 1), false), columns[1][1])
+        Assertions.assertEquals(Node(Point(2, 0), false), columns[2][0])
+        Assertions.assertEquals(Node(Point(2, 1), false), columns[2][1])
     }
 }

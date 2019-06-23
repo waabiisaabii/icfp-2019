@@ -1,5 +1,7 @@
 package icfp2019
 
+import icfp2019.model.Point
+import icfp2019.model.Problem
 import java.nio.file.Paths
 
 fun loadProblem(problemNumber: Int): String {

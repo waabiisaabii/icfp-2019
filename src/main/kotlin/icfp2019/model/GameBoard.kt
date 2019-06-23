@@ -1,4 +1,4 @@
-package icfp2019
+package icfp2019.model
 
 import org.pcollections.PVector
 
