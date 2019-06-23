@@ -10,3 +10,4 @@ interface Strategy {
 interface Strategy2 {
     fun compute(initialState: GameState): (state: GameState) -> Proposal
 }
+//hhaaha
