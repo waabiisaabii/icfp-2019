@@ -19,10 +19,10 @@ fun main(args: Array<String>) {
 }
 
 fun solve(problem: Problem): String {
-    val gameBoard = GameBoard.gameBoardOf(problem)
+    val gameBoard = GameBoard(problem)
     val gameState = gameStateOf(problem)
     val actions = DFSAnalyzer.analyze(gameBoard).invoke(gameState)
-    return Output.encodeRobotActions(mapOf(Pair(RobotId(0), actions)))
+    return mapOf(Pair(RobotId(0), actions)).encodeActions()
 }
 
 fun constructObstacleMap(problem: Problem): Array<Array<Boolean>> {

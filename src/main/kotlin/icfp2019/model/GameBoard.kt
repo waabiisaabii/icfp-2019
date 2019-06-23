@@ -7,11 +7,7 @@ data class GameBoard(
     val width: Int,
     val height: Int
 ) {
-    companion object {
-        fun gameBoardOf(problem: Problem): GameBoard {
-            return GameBoard(problem.map, problem.size.x, problem.size.y)
-        }
-    }
+    constructor(problem: Problem) : this(problem.map, problem.size.x, problem.size.y)
 
     fun isInBoard(point: Point): Boolean {
         return (point.x in 0 until width && point.y in 0 until height)

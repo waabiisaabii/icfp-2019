@@ -14,7 +14,7 @@ internal class ConservativeDistanceAnalyzerTests {
         val problem = parseTestMap(map)
         printBoard(problem)
         val analyzer = ConservativeDistanceAnalyzer.analyze(
-            GameBoard.gameBoardOf(
+            GameBoard(
                 problem
             )
         ).invoke(GameState.gameStateOf(Point.origin()))
