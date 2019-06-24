@@ -41,5 +41,4 @@ internal class RobotStateTest {
             finalState.robot(RobotId(0)).armRelativePoints
         )
     }
-
 }
