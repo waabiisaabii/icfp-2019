@@ -20,7 +20,7 @@ class OutputTests {
     @Test
     fun testOutputOfOneRobot() {
         val actions = getListOfAction()
-        val map = mapOf(RobotId(1) to actions)
+        val map = mapOf(RobotId.first to actions)
         val actualOutput = map.encodeActions()
 
         Assertions.assertEquals("SSAWWD", actualOutput)
@@ -31,8 +31,8 @@ class OutputTests {
         val actions = getListOfAction()
         // Adding two robots
         val map = mapOf(
-            RobotId(1) to actions,
-            RobotId(2) to actions
+            RobotId.first to actions,
+            RobotId.first.nextId() to actions
         )
         val actualOutput = map.encodeActions()
 
@@ -46,8 +46,8 @@ class OutputTests {
 
         // Adding two robots
         val map = mapOf(
-            RobotId(1) to actionPlus,
-            RobotId(2) to actionPlus
+            RobotId.first to actionPlus,
+            RobotId.first.nextId() to actionPlus
         )
 
         val actualOutput = map.encodeActions()
@@ -61,8 +61,8 @@ class OutputTests {
 
         // Adding two robots
         val map = mapOf(
-            RobotId(1) to actionPlus,
-            RobotId(2) to actionPlus
+            RobotId.first to actionPlus,
+            RobotId.first.nextId() to actionPlus
         )
 
         val actualOutput = map.encodeActions()

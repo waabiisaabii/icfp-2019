@@ -11,52 +11,53 @@ fun applyAction(gameState: GameState, robotId: RobotId, action: Action): GameSta
             Action.MoveDown -> move(robotId, Point::down)
             Action.MoveLeft -> move(robotId, Point::left)
             Action.MoveRight -> move(robotId, Point::right)
+
             Action.TurnClockwise -> updateRobot(robotId) {
                 copy(orientation = orientation.turnClockwise())
             }
+
             Action.TurnCounterClockwise -> updateRobot(robotId) {
                 copy(orientation = orientation.turnCounterClockwise())
             }
+
             Action.AttachFastWheels -> updateRobot(robotId) {
                 copy(remainingFastWheelTime = this.remainingFastWheelTime + 50)
-            }.useItem(Booster.FastWheels)
+            }.useBoosterFromState(Booster.FastWheels)
+
             Action.StartDrill -> updateRobot(robotId) {
                 copy(remainingDrillTime = this.remainingDrillTime + 30)
-            }.useItem(Booster.Drill)
-            Action.PlantTeleportResetPoint -> updateMap(
+            }.useBoosterFromState(Booster.Drill)
+
+            Action.PlantTeleportResetPoint -> updateBoard(
                 currentPosition,
                 get(currentPosition).copy(hasTeleporterPlanted = true)
-            ).useItem(Booster.Teleporter)
-            Action.CloneRobot -> addRobot()
+            ).useBoosterFromState(Booster.Teleporter)
+
+            Action.CloneRobot -> withNewRobot()
 
             is Action.TeleportBack -> updateRobot(robotId) {
                 copy(currentPosition = action.targetResetPoint)
-            }.useItem(Booster.Teleporter)
+            }
 
             is Action.AttachManipulator -> updateRobot(robotId) {
                 copy(armRelativePoints = armRelativePoints.plus(action.point))
-            }.useItem(Booster.ExtraArm)
+            }.useBoosterFromState(Booster.ExtraArm)
         }
     }
 }
 
-private fun GameState.addRobot(): GameState {
-    val newId = RobotId(this.robotState.keys.maxBy { it.id }!!.id + 1)
-    return copy(robotState = robotState.plus(newId to RobotState(newId, this.startingPoint)))
-}
-
 private fun GameState.move(robotId: RobotId, mover: (Point) -> Point): GameState {
-    val robotState = this.robotState.getValue(robotId)
+    val robotState = this.robot(robotId)
 
     val distance = if (robotState.hasActiveFastWheels()) 2 else 1
 
-    return (0 until distance).fold(this) { state, _ ->
-        val newPosition = mover.invoke(state.robot(robotId).currentPosition)
-        state.updateRobot(robotId) {
-            copy(currentPosition = newPosition)
-        }.let { it.wrapAffectedCells(robotId) }
-            .let { it.pickupBoosters(newPosition) }
-    }.updateRobot(robotId) {
+    val movedState = (0 until distance).fold(this) { state, _ ->
+        val newPosition = mover(state.robot(robotId).currentPosition)
+        state.updateRobot(robotId) { copy(currentPosition = newPosition) }
+            .wrapAffectedCells(robotId)
+            .addBoosterToState(newPosition)
+    }
+    return movedState.updateRobot(robotId) {
         copy(
             remainingFastWheelTime = if (robotState.hasActiveFastWheels()) robotState.remainingFastWheelTime - 1 else 0,
             remainingDrillTime = if (robotState.hasActiveDrill()) robotState.remainingDrillTime - 1 else 0
@@ -65,19 +66,19 @@ private fun GameState.move(robotId: RobotId, mover: (Point) -> Point): GameState
 }
 
 private fun GameState.updateRobot(robotId: RobotId, update: RobotState.() -> RobotState): GameState {
-    val robotState = update.invoke(this.robotState.getValue(robotId))
-    return this.copy(robotState = this.robotState.plus(robotState.robotId to robotState))
+    val robotState = update.invoke(this.robot(robotId))
+    return this.withRobotState(robotId, robotState)
 }
 
-private fun GameState.useItem(booster: Booster): GameState {
+private fun GameState.useBoosterFromState(booster: Booster): GameState {
     return this.copy(unusedBoosters = unusedBoosters.plus(booster to unusedBoosters.getOrDefault(booster, 1) - 1))
 }
 
-private fun GameState.pickupBoosters(point: Point): GameState {
-    val node = this.get(point)
+private fun GameState.addBoosterToState(point: Point): GameState {
+    val node = this.nodeState(point)
     val booster = node.booster ?: return this
     // pickup
-    return this.updateMap(point, node.copy(booster = null)).let {
+    return this.updateState(point, node.copy(booster = null)).let {
         it.copy(unusedBoosters = it.unusedBoosters.plus(booster to it.unusedBoosters.getOrDefault(booster, 0) + 1))
     }
 }
@@ -85,18 +86,21 @@ private fun GameState.pickupBoosters(point: Point): GameState {
 private fun GameState.wrapAffectedCells(robotId: RobotId): GameState {
     val robot = this.robot(robotId)
     val robotPoint = robot.currentPosition
-    val cells = this.cells.update(robotPoint, cells.get(robotPoint).copy(isWrapped = true, isObstacle = false))
-    val rcells = robot.armRelativePoints.fold(cells, { acc, p ->
-        val newPoint = robotPoint.applyRelativePoint(p)
-        if (this.isInBoard(newPoint) && cells.get(newPoint).isObstacle.not()) {
-            acc.update(newPoint, cells.get(newPoint).copy(isWrapped = true))
+    val boardNode = this.get(robotPoint)
+
+    val withUpdatedBoardState = if (boardNode.isObstacle)
+        updateBoard(robotPoint, boardNode.copy(isObstacle = false))
+    else this
+
+    val updatedState = withUpdatedBoardState.updateState(robotPoint, this.nodeState(robotPoint).copy(isWrapped = true))
+
+    return robot.armRelativePoints.fold(updatedState, { state, point ->
+        val newPoint = robotPoint.applyRelativePoint(point)
+        if (state.isInBoard(newPoint) && state.get(newPoint).isObstacle.not()) {
+            val boardState = state.nodeState(newPoint)
+            state.updateState(newPoint, boardState.copy(isWrapped = true))
         } else {
-            acc
+            state
         }
     })
-    return this.copy(cells = rcells)
-}
-
-private fun GameState.updateMap(point: Point, node: Node): GameState {
-    return this.copy(cells = this.cells.update(point, node))
 }

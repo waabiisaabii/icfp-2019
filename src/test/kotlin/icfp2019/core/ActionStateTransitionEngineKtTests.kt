@@ -22,7 +22,7 @@ internal class ActionStateTransitionEngineKtTests {
 
         Assertions.assertEquals(
             startingPosition.up().right(),
-            upRightState.robotState.getValue(RobotId.first).currentPosition
+            upRightState.robot(RobotId.first).currentPosition
         )
 
         val backToOrigin = applyAction(upRightState, RobotId.first, Action.MoveDown).let {
@@ -31,7 +31,7 @@ internal class ActionStateTransitionEngineKtTests {
 
         Assertions.assertEquals(
             startingPosition,
-            backToOrigin.robotState.getValue(RobotId.first).currentPosition
+            backToOrigin.robot(RobotId.first).currentPosition
         )
     }
 
@@ -42,15 +42,15 @@ internal class ActionStateTransitionEngineKtTests {
         val gameState = GameState(problem)
 
         Assertions.assertEquals(
-            Node(Point.origin(), isObstacle = false, booster = Booster.Drill),
-            gameState.get(Point.origin())
+            BoardNodeState(Point.origin(), isWrapped = false, booster = Booster.Drill),
+            gameState.nodeState(Point.origin())
         )
 
         listOf(Action.MoveLeft).applyTo(gameState).let {
             Assertions.assertEquals(mapOf(Booster.Drill to 1), it.unusedBoosters)
             Assertions.assertEquals(
-                Node(Point.origin(), isObstacle = false, isWrapped = true, booster = null),
-                it.get(Point.origin())
+                BoardNodeState(Point.origin(), isWrapped = true),
+                it.nodeState(Point.origin())
             )
         }
     }
@@ -62,8 +62,8 @@ internal class ActionStateTransitionEngineKtTests {
         val gameState = GameState(problem)
 
         Assertions.assertEquals(
-            Node(Point.origin(), isObstacle = false, booster = Booster.ExtraArm),
-            gameState.get(Point.origin())
+            BoardNodeState(Point.origin(), booster = Booster.ExtraArm),
+            gameState.nodeState(Point.origin())
         )
 
         val pickupState = listOf(Action.MoveLeft).applyTo(gameState)
@@ -71,8 +71,8 @@ internal class ActionStateTransitionEngineKtTests {
             Assertions.assertEquals(1, boostersAvailable(Booster.ExtraArm))
             Assertions.assertEquals(mapOf(Booster.ExtraArm to 1), this.unusedBoosters)
             Assertions.assertEquals(
-                Node(Point.origin(), isObstacle = false, isWrapped = true, booster = null),
-                this.get(Point.origin())
+                BoardNodeState(Point.origin(), isWrapped = true, booster = null),
+                this.nodeState(Point.origin())
             )
         }
 
@@ -108,7 +108,7 @@ internal class ActionStateTransitionEngineKtTests {
 
         actions.applyTo(gameState).let { state ->
             printBoard(state)
-            Assertions.assertEquals(expectedProblem.map, state.cells)
+            Assertions.assertEquals(expectedProblem.map, state.toProblem().map)
         }
     }
 
@@ -133,7 +133,7 @@ internal class ActionStateTransitionEngineKtTests {
 
         actions.applyTo(gameState).let { state ->
             printBoard(state)
-            Assertions.assertEquals(expectedProblem.map, state.cells)
+            Assertions.assertEquals(expectedProblem.map, state.toProblem().map)
         }
     }
 
@@ -162,7 +162,7 @@ internal class ActionStateTransitionEngineKtTests {
 
         actions.applyTo(gameState).let { state ->
             printBoard(state)
-            Assertions.assertEquals(expectedProblem.map, state.cells)
+            Assertions.assertEquals(expectedProblem.map, state.toProblem().map)
         }
     }
 
@@ -189,7 +189,8 @@ internal class ActionStateTransitionEngineKtTests {
     """.toProblem()
 
         actions.applyTo(gameState).let {
-            Assertions.assertEquals(expectedProblem.map, it.cells)
+            printBoard(gameState)
+            Assertions.assertEquals(expectedProblem.map, it.toProblem().map)
         }
     }
 
