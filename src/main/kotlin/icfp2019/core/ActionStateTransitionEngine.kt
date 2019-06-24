@@ -54,7 +54,7 @@ private fun GameState.move(robotId: RobotId, mover: (Point) -> Point): GameState
         val newPosition = mover.invoke(state.robot(robotId).currentPosition)
         state.updateRobot(robotId) {
             copy(currentPosition = newPosition)
-        }.let { it.wrapAffectedCells(newPosition) }
+        }.let { it.wrapAffectedCells(robotId) }
             .let { it.pickupBoosters(newPosition) }
     }.updateRobot(robotId) {
         copy(
@@ -82,9 +82,19 @@ private fun GameState.pickupBoosters(point: Point): GameState {
     }
 }
 
-private fun GameState.wrapAffectedCells(point: Point): GameState {
-    val cells = this.cells
-    return this.copy(cells = cells.update(point, cells.get(point).copy(isWrapped = true, isObstacle = false)))
+private fun GameState.wrapAffectedCells(robotId: RobotId): GameState {
+    val robot = this.robot(robotId)
+    val robotPoint = robot.currentPosition
+    val cells = this.cells.update(robotPoint, cells.get(robotPoint).copy(isWrapped = true, isObstacle = false))
+    val rcells = robot.armRelativePoints.fold(cells, { acc, p ->
+        val newPoint = robotPoint.applyRelativePoint(p)
+        if (this.isInBoard(newPoint) && cells.get(newPoint).isObstacle.not()) {
+            acc.update(newPoint, cells.get(newPoint).copy(isWrapped = true))
+        } else {
+            acc
+        }
+    })
+    return this.copy(cells = rcells)
 }
 
 private fun GameState.updateMap(point: Point, node: Node): GameState {

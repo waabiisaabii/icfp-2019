@@ -10,4 +10,5 @@ out/
 # vim
 .*.sw?
 problems/*.sol
+problems/*.sol-partial
 problems/*.log

@@ -101,9 +101,9 @@ internal class ActionStateTransitionEngineKtTests {
             Action.MoveUp, Action.AttachFastWheels, Action.MoveRight, Action.MoveRight
         )
         val expectedProblem = """
-        ...XX
+        .wwXX
         wwwww
-        w..XX
+        wwwXX
     """.toProblem()
 
         actions.applyTo(gameState).let { state ->
@@ -126,9 +126,9 @@ internal class ActionStateTransitionEngineKtTests {
             Action.MoveRight, Action.StartDrill, Action.MoveRight, Action.MoveRight, Action.MoveRight
         )
         val expectedProblem = """
-        ..X..
+        ..Xww
         wwwww
-        ..X..
+        ..Xww
     """.toProblem()
 
         actions.applyTo(gameState).let { state ->
@@ -180,7 +180,7 @@ internal class ActionStateTransitionEngineKtTests {
             Action.MoveUp, Action.MoveUp,
             Action.MoveRight, Action.MoveDown, Action.MoveDown,
             Action.MoveRight, Action.MoveUp, Action.MoveUp,
-            Action.MoveDown, Action.MoveRight
+            Action.MoveDown
         )
         val expectedProblem = """
         wwwXX
