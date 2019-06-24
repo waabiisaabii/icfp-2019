@@ -46,7 +46,7 @@ fun Sequence<Pair<GameState, Action>>.score(
 
     // from the final position we will estimate the number of
     // steps required to completely wrap the remainder of the mine
-    val point = final.robotState.getValue(robotId).currentPosition
+    val point = final.robot(robotId).currentPosition
     val gameState = initial.first
     val conservativeDistance = ConservativeDistanceAnalyzer.analyze(gameState)(robotId, final)(point)
 
@@ -63,7 +63,7 @@ fun Sequence<Pair<GameState, Action>>.score(
 
 fun brainStep(
     initialGameState: GameState,
-    strategies: Iterable<Strategy>,
+    strategy: Strategy,
     maximumSteps: Int
 ): Pair<GameState, Map<RobotId, Action>> {
 
@@ -75,17 +75,14 @@ fun brainStep(
     // the list of robots can change over time steps, get a fresh copy each iteration
     var gameState = initialGameState
     val actions = mutableMapOf<RobotId, Action>()
-    val workingSet = gameState.robotState.keys.toMutableSet()
+    val workingSet = gameState.allRobotIds.toMutableSet()
     while (!gameState.isGameComplete() && workingSet.isNotEmpty()) {
         // pick the minimum across all robot/strategy pairs
         val winner = workingSet
-            .flatMap { robotId ->
-                strategies
-                    .map { strategy ->
-                        strategySequence(gameState, strategy, robotId)
-                            .take(maximumSteps)
-                            .score(robotId, strategy)
-                    }
+            .map { robotId ->
+                strategySequence(gameState, strategy, robotId)
+                    .take(maximumSteps)
+                    .score(robotId, strategy)
             }
 
         val winner0 = winner.minBy { it.distanceEstimate }!!
@@ -102,7 +99,7 @@ fun brainStep(
 
 fun brain(
     problem: Problem,
-    strategies: Iterable<Strategy>,
+    strategy: Strategy,
     maximumSteps: Int
 ): Sequence<Solution> =
     generateSequence(
@@ -111,7 +108,7 @@ fun brain(
             if (gameState.isGameComplete()) {
                 null
             } else {
-                val (newState, newActions) = brainStep(gameState, strategies, maximumSteps)
+                val (newState, newActions) = brainStep(gameState, strategy, maximumSteps)
                 val mergedActions = actions.toMutableMap()
                 newActions.forEach { (robotId, action) ->
                     mergedActions.merge(robotId, listOf(action)) { left, right -> left.plus(right) }

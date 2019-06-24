@@ -1,14 +1,13 @@
 package icfp2019
 
 import icfp2019.core.Strategy
-import icfp2019.model.*
+import icfp2019.model.Action
+import icfp2019.model.GameState
+import icfp2019.model.RobotId
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-
 import java.util.*
 
-@Disabled
 internal class BrainKtTest {
     class TestStrategy(vararg actions: Action) : Strategy {
         private val queue = ArrayDeque(actions.toList())
@@ -25,43 +24,41 @@ internal class BrainKtTest {
     }
 
     @Test
-    @Disabled
     fun brainStep() {
         val problem = parseTestMap(init)
         val solution = parseTestMap(fini)
         printBoard(problem)
-        val strategies = listOf(
-            TestStrategy(Action.MoveDown, Action.DoNothing, Action.MoveDown),
-            TestStrategy(Action.DoNothing, Action.MoveRight))
+        val strategy = TestStrategy(Action.MoveDown, Action.MoveRight)
         var state = GameState(problem)
-        for (i in 0..3) {
+        for (i in 0..1) {
             val (result, actions) = brainStep(
                 state,
-                strategies,
+                strategy,
                 1
             )
 
             state = result
 
             println(actions)
-            val problem0 = problem.copy(map = result.cells)
-            printBoard(problem0)
+            printBoard(result)
         }
 
-        Assertions.assertEquals(solution.map, state.cells)
+        Assertions.assertEquals(solution.map, state.toProblem().map)
     }
 
     private val init =
         """
-        @..
-        ...
-        ...
+        @...
+        ....
+        ....
+        ....
         """
 
     private val fini =
         """
-        w..
-        www
-        ..w
+        www.
+        www.
+        .ww.
+        ....
         """
 }

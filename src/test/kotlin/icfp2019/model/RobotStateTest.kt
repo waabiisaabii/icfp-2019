@@ -1,9 +1,9 @@
 package icfp2019.model
 
+import icfp2019.core.applyAction
 import icfp2019.toProblem
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.lang.Math.PI
 
 internal class RobotStateTest {
     @Test
@@ -12,14 +12,36 @@ internal class RobotStateTest {
         val map = """..""".toProblem()
         val startState = GameState(map)
 
-        val point1 = Point(1, 1)
-        Assertions.assertEquals(
-            Point(1, -1),
-            startState.robot(RobotId(0)).rotatePoint(point1, -PI / 2))
+        val robotId = RobotId.first
 
-        val point2 = Point(-1, 1)
+        val state0 = applyAction(startState, robotId, Action.TurnClockwise)
         Assertions.assertEquals(
-            point1,
-            startState.robot(RobotId(0)).rotatePoint(point2, -PI / 2))
+            listOf(Point(0, 1), Point(-1, 1), Point(1, 1)),
+            state0.robot(robotId).armRelativePoints
+        )
+
+        val state1 = applyAction(startState, RobotId.first, Action.TurnCounterClockwise)
+        Assertions.assertEquals(
+            listOf(Point(0, -1), Point(1, -1), Point(-1, -1)),
+            state1.robot(robotId).armRelativePoints
+        )
+    }
+
+    @Test
+    fun testRotate360() {
+
+        val map = """..""".toProblem()
+        val startState = GameState(map)
+        val robotId = RobotId.first
+
+        val state0 = applyAction(startState, robotId, Action.TurnClockwise)
+        val state1 = applyAction(state0, robotId, Action.TurnClockwise)
+        val state2 = applyAction(state1, robotId, Action.TurnClockwise)
+        val finalState = applyAction(state2, robotId, Action.TurnClockwise)
+
+        Assertions.assertEquals(
+            listOf(Point(1, 0), Point(1, 1), Point(1, -1)),
+            finalState.robot(robotId).armRelativePoints
+        )
     }
 }

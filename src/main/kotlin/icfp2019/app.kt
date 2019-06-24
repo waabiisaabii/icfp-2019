@@ -1,6 +1,6 @@
 package icfp2019
 
-import icfp2019.model.*
+import icfp2019.model.Problem
 import icfp2019.strategies.BFSStrategy
 import java.io.File
 import java.nio.file.Paths
@@ -11,7 +11,7 @@ private fun computeSolution(file: File): Pair<Solution?, Long> {
     val timeElapsed = measureTimeMillis {
         print("Running ${file.name}... ")
         val problem = parseDesc(file.readText(), file.name)
-        brain(problem, listOf(BFSStrategy), 1).forEach { partialSolution ->
+        brain(problem, BFSStrategy, 1).forEach { partialSolution ->
             solution = partialSolution
             File(file.parentFile, "${file.nameWithoutExtension}.sol-partial").writeText(solution.toString())
         }

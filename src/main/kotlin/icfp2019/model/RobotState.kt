@@ -1,6 +1,6 @@
 package icfp2019.model
 
-import java.lang.Math.*
+import kotlin.math.PI
 import kotlin.math.roundToInt
 
 data class RobotState(
@@ -19,17 +19,22 @@ data class RobotState(
         return remainingFastWheelTime > 0
     }
 
-    fun turnArmWithDegree(rotate: Double): List<Point> {
-        return listOf(Point(1, 0), Point(1, 1), Point(1, -1))
-            .map { rotatePoint(it, rotate) }
+    fun turnClockwise(): List<Point> {
+        return armRelativePoints
+            .map { rotatePoint(it, PI / 2) }
+    }
+
+    fun turnCounterClockwise(): List<Point> {
+        return armRelativePoints
+            .map { rotatePoint(it, -PI / 2) }
     }
 
     fun rotatePoint(point: Point, theta: Double): Point {
         val x = point.x
         val y = point.y
         return Point(
-            ((cos(theta) * x - sin(theta) * y).roundToInt()),
-            ((cos(theta) * y + sin(theta) * x).roundToInt())
+            ((Math.cos(theta) * x - Math.sin(theta) * y).roundToInt()),
+            ((Math.cos(theta) * y + Math.sin(theta) * x).roundToInt())
         )
     }
 }
