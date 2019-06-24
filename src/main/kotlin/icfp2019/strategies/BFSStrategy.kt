@@ -12,18 +12,21 @@ import org.jgrapht.traverse.BreadthFirstIterator
 import org.jgrapht.traverse.GraphIterator
 
 object BFSStrategy : Strategy {
-    private fun getNumWrapped(gameState: GameState,
-                              robotId: RobotId): Int {
+    fun getNumWrappedOnArm(
+        gameState: GameState,
+        robotId: RobotId
+    ): Int {
         val armOffsets = gameState.robot(robotId).armRelativePoints
         val currentPoint = gameState.robot(robotId).currentPosition
         val numToBeWrapped = armOffsets.filter {
             val armOnMap = it.applyRelativePoint(currentPoint)
             gameState.isInBoard(armOnMap)
                     && gameState.get(armOnMap).isObstacle.not()
-                    && gameState.get(armOnMap).isWrapped.not()
+                    && gameState.nodeState(armOnMap).isWrapped.not()
         }.count()
         return numToBeWrapped
     }
+
     override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Action {
         val graphBuilder = BoardCellsGraphAnalyzer.analyze(initialState)
         return { robotId, gameState ->
@@ -43,49 +46,58 @@ object BFSStrategy : Strategy {
             // look ahead
 
             val currentOrientation = gameState.robot(robotId).orientation
-            val orientation = listOf(
-                currentOrientation.turnClockwise(),
-                currentOrientation.turnCounterClockwise())
+            val action = listOf(
+                Pair(currentOrientation.turnClockwise(), "Clockwise"),
+                Pair(currentOrientation.turnCounterClockwise(), "CounterClockwise"),
+                Pair(currentOrientation, "DoNothing")
+            )
                 .map {
-                    val newState = applyAction(gameState, robotId, Action.TurnClockwise)
-                    val toBeWrapped = getNumWrapped(newState, robotId)
-                    println(toBeWrapped)
-                    val newState2 = applyAction(newState, robotId, Action.MoveUp)
-                    println(newState2)
+                    val newState = when (it.second) {
+                        "Clockwise" -> applyAction(gameState, robotId, Action.TurnClockwise)
+                        "CountClockwise" -> applyAction(gameState, robotId, Action.TurnCounterClockwise)
+                        else -> applyAction(gameState, robotId, Action.DoNothing)
+                    }
+
+                    val toBeWrapped = getNumWrappedOnArm(newState, robotId)
+                    val toBeWrapped2 = getNumWrappedOnArm(newState, robotId)
+                    val action = when (it.second) {
+                        "Clockwise" -> Action.TurnClockwise
+                        "CounterClockwise" -> Action.TurnCounterClockwise
+                        else -> Action.DoNothing
+                    }
+                    Pair(toBeWrapped + toBeWrapped2, action)
                 }
-//                .maxBy { it.first }
-            println(orientation)
-//            if (orientation?.second != currentOrientation) {
-//                if (currentOrientation.turnClockwise() == orientation!!.second) {
-//                    Action.TurnClockwise
-//                } else {
-//                    Action.TurnCounterClockwise
-//                }
-//            } else {
-            val neighbors = currentNode.point.neighbors()
-                .filter { gameState.isInBoard(it) }
-                .map { gameState.get(it) }
-            if (neighbors.any {
-                    it.point in unWrappedPoints && it.isObstacle.not()
-                }) {
-                bfsIterator.next() // move past currentNode
-                val neighbor = bfsIterator.next().point
-                currentPoint.actionToGetToNeighbor(neighbor)
+                .maxBy { it.first }?.second
+
+            if (action != Action.DoNothing) {
+                println(action)
+                action!!
             } else {
-                val analyze = ShortestPathUsingDijkstra.analyze(gameState)
-                val shortestPathAlgorithm = analyze(robotId, gameState)
+                var newState = applyAction(gameState, robotId, action)
+                val neighbors = currentNode.point.neighbors()
+                    .filter { newState.isInBoard(it) }
+                    .map { newState.get(it) }
+                if (neighbors.any {
+                        it.point in unWrappedPoints && it.isObstacle.not()
+                    }) {
+                    bfsIterator.next() // move past currentNode
+                    val neighbor = bfsIterator.next().point
+                    currentPoint.actionToGetToNeighbor(neighbor)
+                } else {
+                    val analyze = ShortestPathUsingDijkstra.analyze(newState)
+                    val shortestPathAlgorithm = analyze(robotId, newState)
 
-                val pathToClosestNode: GraphPath<BoardCell, DefaultEdge> = unwrappedGraph.vertexSet()
-                    .filter { it.point != currentNode.point }
-                    .filter { it.point in unWrappedPoints }
-                    .map { shortestPathAlgorithm.getPath(gameState.get(currentPoint), it) }
-                    .minBy { it.length }!!
+                    val pathToClosestNode: GraphPath<BoardCell, DefaultEdge> = unwrappedGraph.vertexSet()
+                        .filter { it.point != currentNode.point }
+                        .filter { it.point in unWrappedPoints }
+                        .map { shortestPathAlgorithm.getPath(newState.get(currentPoint), it) }
+                        .minBy { it.length }!!
 
-                // pathToClosestNode.vertexList[0] is `currentNode`
-                val nextNode = pathToClosestNode.vertexList[1]
-                currentPoint.actionToGetToNeighbor(nextNode.point)
+                    // pathToClosestNode.vertexList[0] is `currentNode`
+                    val nextNode = pathToClosestNode.vertexList[1]
+                    currentPoint.actionToGetToNeighbor(nextNode.point)
+                }
             }
-//            }
         }
     }
 }

@@ -4,7 +4,9 @@ import icfp2019.core.applyAction
 import icfp2019.model.Action
 import icfp2019.model.GameState
 import icfp2019.model.RobotId
+import icfp2019.strategies.BFSStrategy
 import icfp2019.toProblem
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.*
 
@@ -66,9 +68,16 @@ class BFSAnalyzerTest {
 
         val givenMap = """
             ...
-            ...
-            X@X
+            .X.
+            X@.
+            X..
         """.toProblem()
+//
+//        val givenMap = """
+//            ...
+//            ...
+//            .@.
+//        """.toProblem()
         val startState = GameState(givenMap)
 
         val analyzer = BFSAnalyzer.analyze(startState)
@@ -86,5 +95,24 @@ class BFSAnalyzerTest {
         }.last()
         result.second.forEach(System.out::println)
         // expected: up, up
+    }
+
+    @Test
+    fun `test getNumWrappedOnArm`() {
+
+        val givenMap = """
+            ...
+            @..
+            X.X
+        """.toProblem()
+        val startState = GameState(givenMap)
+        val robotId = RobotId.first
+
+        val numWrappedOnArm = BFSStrategy.getNumWrappedOnArm(startState, robotId)
+        Assertions.assertEquals(3, numWrappedOnArm)
+
+        val rotateClockwiseState = applyAction(startState, robotId, Action.TurnClockwise)
+        val numWrappedOnArm2 = BFSStrategy.getNumWrappedOnArm(rotateClockwiseState, robotId)
+        Assertions.assertEquals(2, numWrappedOnArm2)
     }
 }
