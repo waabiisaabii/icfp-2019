@@ -63,7 +63,7 @@ fun Sequence<Pair<GameState, Action>>.score(
 
 fun brainStep(
     initialGameState: GameState,
-    strategies: Iterable<Strategy>,
+    strategy: Strategy,
     maximumSteps: Int
 ): Pair<GameState, Map<RobotId, Action>> {
 
@@ -79,13 +79,10 @@ fun brainStep(
     while (!gameState.isGameComplete() && workingSet.isNotEmpty()) {
         // pick the minimum across all robot/strategy pairs
         val winner = workingSet
-            .flatMap { robotId ->
-                strategies
-                    .map { strategy ->
-                        strategySequence(gameState, strategy, robotId)
-                            .take(maximumSteps)
-                            .score(robotId, strategy)
-                    }
+            .map { robotId ->
+                strategySequence(gameState, strategy, robotId)
+                    .take(maximumSteps)
+                    .score(robotId, strategy)
             }
 
         val winner0 = winner.minBy { it.distanceEstimate }!!
@@ -102,7 +99,7 @@ fun brainStep(
 
 fun brain(
     problem: Problem,
-    strategies: Iterable<Strategy>,
+    strategy: Strategy,
     maximumSteps: Int
 ): Sequence<Solution> =
     generateSequence(
@@ -111,7 +108,7 @@ fun brain(
             if (gameState.isGameComplete()) {
                 null
             } else {
-                val (newState, newActions) = brainStep(gameState, strategies, maximumSteps)
+                val (newState, newActions) = brainStep(gameState, strategy, maximumSteps)
                 val mergedActions = actions.toMutableMap()
                 newActions.forEach { (robotId, action) ->
                     mergedActions.merge(robotId, listOf(action)) { left, right -> left.plus(right) }
