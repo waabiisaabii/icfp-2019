@@ -51,4 +51,27 @@ class BFSAnalyzerTest {
         }.last()
         result.second.forEach(System.out::println)
     }
+
+    @Test
+    fun `add rotate`() {
+        val givenMap = """
+            ...
+            ...
+            X@X
+        """.toProblem()
+        val startState = GameState(givenMap)
+        val analyzer = BFSAnalyzer.analyze(startState)
+        println(analyzer)
+        val startingWalkState: Pair<GameState, List<Action>> = startState to listOf()
+        val result: Pair<GameState, List<Action>> = generateSequence(startingWalkState) { (state, actions) ->
+            if (state.isGameComplete()) null
+            else {
+                val action = analyzer.invoke(RobotId.first, state)
+                val newState = applyAction(state, RobotId.first, action)
+                newState to actions.plus(action)
+            }
+        }.last()
+        result.second.forEach(System.out::println)
+        //expected: up, up
+    }
 }

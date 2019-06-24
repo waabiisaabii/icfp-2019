@@ -3,10 +3,7 @@ package icfp2019.strategies
 import icfp2019.analyzers.GraphAnalyzer
 import icfp2019.analyzers.ShortestPathUsingDijkstra
 import icfp2019.core.Strategy
-import icfp2019.model.Action
-import icfp2019.model.GameState
-import icfp2019.model.Node
-import icfp2019.model.RobotId
+import icfp2019.model.*
 import org.jgrapht.GraphPath
 import org.jgrapht.graph.AsSubgraph
 import org.jgrapht.graph.DefaultEdge
@@ -24,6 +21,51 @@ object BFSStrategy : Strategy {
                 AsSubgraph(graph, graph.vertexSet().filter { gameState.get(it.point).isWrapped.not() }.plus(currentNode).toSet())
 
             val bfsIterator: GraphIterator<Node, DefaultEdge> = BreadthFirstIterator(unwrappedGraph, currentNode)
+
+            //look ahead
+
+
+            val orientations = listOf(Orientation.Right, Orientation.Left, Orientation.Up, Orientation.Down)
+                .map {
+                    val tmpIterator: GraphIterator<Node, DefaultEdge> =
+                        BreadthFirstIterator(unwrappedGraph, currentNode)
+                    // skip current node
+                    if (!tmpIterator.hasNext())
+                        Pair(0, it)
+
+                    val currentRobotState = gameState.robot(robotId)
+
+                    val tmpRobotState = RobotState(robotId,
+                        currentPoint,
+                        currentRobotState.orientation,
+                        currentRobotState.remainingFastWheelTime,
+                        currentRobotState.remainingDrillTime,
+                        currentRobotState.turnArm(it)
+                    )
+
+                    val curNode = tmpIterator.next()
+                    val numToBeWrapped = curNode.point.neighbors()
+                        .filter { point ->
+                            gameState.isInBoard(point)
+                                && gameState.get(point).isWrapped.not()
+                                && gameState.get(point).isObstacle.not()
+                                && tmpRobotState.armRelativePoints.contains(point)}
+                        .count()
+
+                    if (!tmpIterator.hasNext())
+                        Pair(numToBeWrapped, it)
+
+                    val nextNode = tmpIterator.next()
+                    val numToBeWrapped2 = nextNode.point.neighbors()
+                        .filter { point ->
+                            gameState.isInBoard(point)
+                                && gameState.get(point).isWrapped.not()
+                                && gameState.get(point).isObstacle.not()
+                                && tmpRobotState.armRelativePoints.contains(point)}
+                        .count()
+                    Pair(numToBeWrapped + numToBeWrapped2, it)
+                }.maxBy { it.first }
+            println(orientations)
 
             val neighbors = currentNode.point.neighbors()
                 .filter { gameState.isInBoard(it) }
