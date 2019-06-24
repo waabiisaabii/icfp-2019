@@ -23,8 +23,7 @@ object BFSStrategy : Strategy {
 
             val bfsIterator: GraphIterator<Node, DefaultEdge> = BreadthFirstIterator(unwrappedGraph, currentNode)
 
-            //look ahead
-
+            // look ahead
 
             val currentOrientation = gameState.robot(robotId).orientation
             val orientation = listOf(
@@ -35,7 +34,7 @@ object BFSStrategy : Strategy {
                         BreadthFirstIterator(unwrappedGraph, currentNode)
                     // skip current node
                     if (!tmpIterator.hasNext())
-                        return@map Pair(0, null)
+                        return@map Pair(0, currentOrientation)
 
                     val currentRobotState = gameState.robot(robotId)
 
@@ -44,17 +43,17 @@ object BFSStrategy : Strategy {
                         currentRobotState.orientation,
                         currentRobotState.remainingFastWheelTime,
                         currentRobotState.remainingDrillTime,
-                        currentRobotState.turnArmClockWise(PI/2)
+                        currentRobotState.turnArmClockWise(-PI / 2)
                     )
 
                     tmpIterator.next()
                     val curNode = tmpIterator.next()
                     val numToBeWrapped = curNode.point.neighbors()
                         .filter { point ->
-                            gameState.isInBoard(point)
-                                && gameState.get(point).isWrapped.not()
-                                && gameState.get(point).isObstacle.not()
-                                && tmpRobotState.armRelativePoints
+                            gameState.isInBoard(point) &&
+                                gameState.get(point).isWrapped.not() &&
+                                gameState.get(point).isObstacle.not() &&
+                                tmpRobotState.armRelativePoints
                                 .filter { curNode.point.applyRelativePoint(it) == gameState.get(point).point }
                                 .count() > 0
                         }
@@ -66,16 +65,16 @@ object BFSStrategy : Strategy {
                     val nextNode = tmpIterator.next()
                     val numToBeWrapped2 = nextNode.point.neighbors()
                         .filter { point ->
-                            gameState.isInBoard(point)
-                                && gameState.get(point).isWrapped.not()
-                                && gameState.get(point).isObstacle.not()
-                                && tmpRobotState.armRelativePoints.contains(point)}
+                            gameState.isInBoard(point) &&
+                                gameState.get(point).isWrapped.not() &&
+                                gameState.get(point).isObstacle.not() &&
+                                tmpRobotState.armRelativePoints.contains(point) }
                         .count()
                     return@map Pair(numToBeWrapped + numToBeWrapped2, it)
                 }.maxBy { it.first }
             println(orientation)
-            if (orientation != null) {
-                if (currentOrientation.turnClockwise() == orientation.second) {
+            if (orientation?.second != currentOrientation) {
+                if (currentOrientation.turnClockwise() == orientation!!.second) {
                     Action.TurnClockwise
                 } else {
                     Action.TurnCounterClockwise

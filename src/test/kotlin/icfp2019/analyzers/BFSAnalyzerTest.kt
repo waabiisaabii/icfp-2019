@@ -3,12 +3,9 @@ package icfp2019.analyzers
 import icfp2019.core.applyAction
 import icfp2019.model.Action
 import icfp2019.model.GameState
-import icfp2019.model.Point
 import icfp2019.model.RobotId
 import icfp2019.toProblem
 import org.junit.jupiter.api.Test
-import java.lang.Math.PI
-import java.lang.Math.sin
 import java.util.*
 
 class BFSAnalyzerTest {
@@ -58,7 +55,6 @@ class BFSAnalyzerTest {
 
     @Test
     fun `add rotate`() {
-        println(sin(PI / 2))
 //        val givenMap = """
 //            ....
 //            .X.X
@@ -89,6 +85,6 @@ class BFSAnalyzerTest {
             }
         }.last()
         result.second.forEach(System.out::println)
-        //expected: up, up
+        // expected: up, up
     }
 }
