@@ -14,11 +14,11 @@ fun applyAction(gameState: GameState, robotId: RobotId, action: Action): GameSta
             Action.MoveRight -> move(robotId, Point::right)
             Action.TurnClockwise -> updateRobot(robotId) {
                 copy(orientation = orientation.turnClockwise())
-                copy(armRelativePoints = gameState.robot(robotId).turnArmClockWise(PI / 2))
+                copy(armRelativePoints = gameState.robot(robotId).turnArmWithDegree(-PI / 2))
             }
             Action.TurnCounterClockwise -> updateRobot(robotId) {
                 copy(orientation = orientation.turnCounterClockwise())
-                copy(armRelativePoints = gameState.robot(robotId).turnArmClockWise(-PI / 2))
+                copy(armRelativePoints = gameState.robot(robotId).turnArmWithDegree(PI / 2))
             }
             Action.AttachFastWheels -> updateRobot(robotId) {
                 copy(remainingFastWheelTime = this.remainingFastWheelTime + 50)

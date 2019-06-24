@@ -19,7 +19,7 @@ data class RobotState(
         return remainingFastWheelTime > 0
     }
 
-    fun turnArmClockWise(rotate: Double): List<Point> {
+    fun turnArmWithDegree(rotate: Double): List<Point> {
         return listOf(Point(1, 0), Point(1, 1), Point(1, -1))
             .map { rotatePoint(it, rotate) }
     }
