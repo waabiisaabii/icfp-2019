@@ -14,10 +14,12 @@ fun applyAction(gameState: GameState, robotId: RobotId, action: Action): GameSta
 
             Action.TurnClockwise -> updateRobot(robotId) {
                 copy(orientation = orientation.turnClockwise())
+                copy(armRelativePoints = gameState.robot(robotId).turnClockwise())
             }
 
             Action.TurnCounterClockwise -> updateRobot(robotId) {
                 copy(orientation = orientation.turnCounterClockwise())
+                copy(armRelativePoints = gameState.robot(robotId).turnCounterClockwise())
             }
 
             Action.AttachFastWheels -> updateRobot(robotId) {
