@@ -23,7 +23,7 @@ data class RobotState(
             .map { rotatePoint(it, rotate) }
     }
 
-    fun rotatePoint(point : Point, theta: Double): Point {
+    fun rotatePoint(point: Point, theta: Double): Point {
         val x = point.x
         val y = point.y
         return Point(
