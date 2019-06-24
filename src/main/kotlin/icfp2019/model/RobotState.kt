@@ -1,5 +1,7 @@
 package icfp2019.model
 
+import kotlin.math.roundToInt
+
 data class RobotState(
     val robotId: RobotId,
     val currentPosition: Point,
@@ -14,5 +16,19 @@ data class RobotState(
 
     fun hasActiveFastWheels(): Boolean {
         return remainingFastWheelTime > 0
+    }
+
+    fun turnArmClockWise(rotate: Double): List<Point> {
+        return listOf(Point(1, 0), Point(1, 1), Point(1, -1))
+            .map { rotatePoint(it, rotate) }
+    }
+
+    fun rotatePoint(point : Point, theta: Double): Point {
+        val x = point.x
+        val y = point.y
+        return Point(
+            ((Math.cos(theta) * x - Math.sin(theta) * y).roundToInt()),
+            ((Math.cos(theta) * y + Math.sin(theta) * x).roundToInt())
+        )
     }
 }
