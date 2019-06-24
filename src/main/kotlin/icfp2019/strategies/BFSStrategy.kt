@@ -18,13 +18,12 @@ object BFSStrategy : Strategy {
     ): Int {
         val armOffsets = gameState.robot(robotId).armRelativePoints
         val currentPoint = gameState.robot(robotId).currentPosition
-        val numToBeWrapped = armOffsets.filter {
+        return armOffsets.filter {
             val armOnMap = it.applyRelativePoint(currentPoint)
             gameState.isInBoard(armOnMap)
                     && gameState.get(armOnMap).isObstacle.not()
                     && gameState.nodeState(armOnMap).isWrapped.not()
         }.count()
-        return numToBeWrapped
     }
 
     override fun compute(initialState: GameState): (robotId: RobotId, state: GameState) -> Action {
@@ -59,12 +58,15 @@ object BFSStrategy : Strategy {
                     }
 
                     val toBeWrapped = getNumWrappedOnArm(newState, robotId)
+                    //TODO Action.MoveUp -> dynamic based on orientation
+                    applyAction(gameState, robotId, Action.MoveUp)
                     val toBeWrapped2 = getNumWrappedOnArm(newState, robotId)
                     val action = when (it.second) {
                         "Clockwise" -> Action.TurnClockwise
                         "CounterClockwise" -> Action.TurnCounterClockwise
                         else -> Action.DoNothing
                     }
+                    println(toBeWrapped + toBeWrapped2)
                     Pair(toBeWrapped + toBeWrapped2, action)
                 }
                 .maxBy { it.first }?.second
