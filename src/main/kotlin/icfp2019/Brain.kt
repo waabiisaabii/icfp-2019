@@ -46,7 +46,7 @@ fun Sequence<Pair<GameState, Action>>.score(
 
     // from the final position we will estimate the number of
     // steps required to completely wrap the remainder of the mine
-    val point = final.robotState.getValue(robotId).currentPosition
+    val point = final.robot(robotId).currentPosition
     val gameState = initial.first
     val conservativeDistance = ConservativeDistanceAnalyzer.analyze(gameState)(robotId, final)(point)
 
@@ -75,7 +75,7 @@ fun brainStep(
     // the list of robots can change over time steps, get a fresh copy each iteration
     var gameState = initialGameState
     val actions = mutableMapOf<RobotId, Action>()
-    val workingSet = gameState.robotState.keys.toMutableSet()
+    val workingSet = gameState.allRobotIds.toMutableSet()
     while (!gameState.isGameComplete() && workingSet.isNotEmpty()) {
         // pick the minimum across all robot/strategy pairs
         val winner = workingSet

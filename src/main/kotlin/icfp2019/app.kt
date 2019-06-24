@@ -1,6 +1,6 @@
 package icfp2019
 
-import icfp2019.model.*
+import icfp2019.model.Problem
 import icfp2019.strategies.BFSStrategy
 import java.io.File
 import java.nio.file.Paths
