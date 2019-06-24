@@ -1,7 +1,6 @@
 package icfp2019.core
 
 import icfp2019.model.*
-import java.lang.Math.PI
 
 fun applyAction(gameState: GameState, robotId: RobotId, action: Action): GameState {
     val currentPosition = gameState.robot(robotId).currentPosition

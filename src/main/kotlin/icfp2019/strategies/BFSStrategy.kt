@@ -10,7 +10,6 @@ import org.jgrapht.graph.AsSubgraph
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.traverse.BreadthFirstIterator
 import org.jgrapht.traverse.GraphIterator
-import java.lang.Math.PI
 
 object BFSStrategy : Strategy {
     private fun getNumWrapped(gameState: GameState,
