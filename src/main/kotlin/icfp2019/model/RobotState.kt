@@ -1,5 +1,8 @@
 package icfp2019.model
 
+import java.lang.Math.*
+import kotlin.math.roundToInt
+
 data class RobotState(
     val robotId: RobotId,
     val currentPosition: Point,
@@ -16,27 +19,18 @@ data class RobotState(
         return remainingFastWheelTime > 0
     }
 
-    fun turnArm(orientation: Orientation): List<Point> =
-        when (orientation) {
-            Orientation.Down -> turnArmDown()
-            Orientation.Up -> turnArmUp()
-            Orientation.Left -> turnArmLeft()
-            Orientation.Right -> turnArmRight()
-        }
-
-    private fun turnArmRight(): List<Point> {
+    fun turnArmClockWise(rotate: Double): List<Point> {
         return listOf(Point(1, 0), Point(1, 1), Point(1, -1))
+            .map { rotatePoint(it, rotate) }
     }
 
-    private fun turnArmLeft(): List<Point> {
-        return listOf(Point(-1, 0), Point(-1, 1), Point(-1, -1))
+    fun rotatePoint(point : Point, theta: Double): Point {
+        val x = point.x
+        val y = point.y
+        return Point(
+            ((cos(theta) * x - sin(theta) * y).roundToInt()),
+            ((cos(theta) * y + sin(theta) * x).roundToInt())
+        )
     }
 
-    private fun turnArmUp(): List<Point> {
-        return listOf(Point(1, 1), Point(0, 1), Point(-1, 1))
-    }
-
-    private fun turnArmDown(): List<Point> {
-        return listOf(Point(1, -1), Point(0, -1), Point(-1, -1))
-    }
 }

@@ -3,9 +3,13 @@ package icfp2019.analyzers
 import icfp2019.core.applyAction
 import icfp2019.model.Action
 import icfp2019.model.GameState
+import icfp2019.model.Point
 import icfp2019.model.RobotId
 import icfp2019.toProblem
 import org.junit.jupiter.api.Test
+import java.lang.Math.PI
+import java.lang.Math.sin
+import java.util.*
 
 class BFSAnalyzerTest {
     @Test
@@ -23,7 +27,7 @@ class BFSAnalyzerTest {
             if (state.isGameComplete()) null
             else {
                 val action = analyzer.invoke(RobotId.first, state)
-                val newState = applyAction(state, RobotId.first, action)
+                val newState = applyAction(state, RobotId.first, action.first())
                 newState to actions.plus(action)
             }
         }.last()
@@ -45,7 +49,7 @@ class BFSAnalyzerTest {
             if (state.isGameComplete()) null
             else {
                 val action = analyzer.invoke(RobotId.first, state)
-                val newState = applyAction(state, RobotId.first, action)
+                val newState = applyAction(state, RobotId.first, action.first())
                 newState to actions.plus(action)
             }
         }.last()
@@ -54,12 +58,23 @@ class BFSAnalyzerTest {
 
     @Test
     fun `add rotate`() {
+        println(sin(PI / 2))
+//        val givenMap = """
+//            ....
+//            .X.X
+//            X@.X
+//            X...
+//            ....
+//            ....
+//        """.toProblem()
+
         val givenMap = """
             ...
             ...
             X@X
         """.toProblem()
         val startState = GameState(givenMap)
+
         val analyzer = BFSAnalyzer.analyze(startState)
         println(analyzer)
         val startingWalkState: Pair<GameState, List<Action>> = startState to listOf()
@@ -67,8 +82,10 @@ class BFSAnalyzerTest {
             if (state.isGameComplete()) null
             else {
                 val action = analyzer.invoke(RobotId.first, state)
-                val newState = applyAction(state, RobotId.first, action)
+                val newState = applyAction(state, RobotId.first, action.first())
                 newState to actions.plus(action)
+                val newState2 = applyAction(state, RobotId.first, action.last())
+                newState2 to actions.plus(action)
             }
         }.last()
         result.second.forEach(System.out::println)

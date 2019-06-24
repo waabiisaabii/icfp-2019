@@ -1,6 +1,7 @@
 package icfp2019.core
 
 import icfp2019.model.*
+import java.lang.Math.PI
 
 fun applyAction(gameState: GameState, robotId: RobotId, action: Action): GameState {
     val currentPosition = gameState.robot(robotId).currentPosition
@@ -13,9 +14,11 @@ fun applyAction(gameState: GameState, robotId: RobotId, action: Action): GameSta
             Action.MoveRight -> move(robotId, Point::right)
             Action.TurnClockwise -> updateRobot(robotId) {
                 copy(orientation = orientation.turnClockwise())
+                copy(armRelativePoints = gameState.robot(robotId).turnArmClockWise(PI/2))
             }
             Action.TurnCounterClockwise -> updateRobot(robotId) {
                 copy(orientation = orientation.turnCounterClockwise())
+                copy(armRelativePoints = gameState.robot(robotId).turnArmClockWise(-PI/2))
             }
             Action.AttachFastWheels -> updateRobot(robotId) {
                 copy(remainingFastWheelTime = this.remainingFastWheelTime + 50)
